@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 import { Auth } from "./components/auth";
-import TaskManager from "./components/task-manager";
-import GetLocationButton from "./components/geolocation";
+import Geolocation from './components/geolocation';
 import { supabase } from "./supabase-client";
 import { SessionContext } from "./context/sessionContext";
 
@@ -37,8 +36,7 @@ function App() {
         <>
           <button onClick={logout}>Log Out</button>
           {/* Remove passing session as prop */}
-          <TaskManager />
-          <GetLocationButton />
+          <Geolocation />
         </>
       ) : (
         <Auth />

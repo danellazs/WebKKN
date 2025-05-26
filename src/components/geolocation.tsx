@@ -1,165 +1,150 @@
-import { useContext, useEffect, useState } from 'react';
-import { SessionContext } from '../context/sessionContext'; // path may vary
-import { supabase } from '../supabase-client';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import 'leaflet/dist/leaflet.css';
+import { useEffect, useState, useContext } from "react";
+import { SessionContext } from "../context/sessionContext";
+import type { FormEvent } from "react";
+import type { ChangeEvent } from "react";
+import { supabase } from "../supabase-client";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import L from "leaflet";
 
-const slemanCenter = { lat: -7.733, lng: 110.355 };
-
-type Story = {
+interface Story {
   id: number;
   latitude: number;
   longitude: number;
   content: string;
+  image_url?: string;
+  location_name?: string;
   email: string;
-  created_at: string;
-  location_name?: string | null;
-  is_public: boolean;
-  image_url?: string | null;
-};
+}
 
-const GeoLocation = () => {
-  const session = useContext(SessionContext); // get session directly (not destructured)
-  const [currentLocation, setCurrentLocation] = useState(slemanCenter);
-  const [storyText, setStoryText] = useState('');
+const MAPTILER_KEY = 'GB6tFeFIv9m9TNPuiCXF';
+
+const Geolocation = () => {
+
+  const session = useContext(SessionContext);
+    if (!session) return <p>Silakan login terlebih dahulu untuk menambahkan cerita.</p>;
+
+
+  const [position, setPosition] = useState<{ lat: number; lng: number } | null>(null);
+  const [content, setContent] = useState("");
+  const [image, setImage] = useState<File | null>(null);
   const [stories, setStories] = useState<Story[]>([]);
-  const [error, setError] = useState<string | null>(null);
+  const [locationName, setLocationName] = useState("");
 
-  const MAPTILER_KEY = 'GB6tFeFIv9m9TNPuiCXF';
+  // Fetch location
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition((pos) => {
+      const { latitude, longitude } = pos.coords;
+      setPosition({ lat: latitude, lng: longitude });
+    });
+    fetchStories();
+  }, []);
 
   const fetchStories = async () => {
     const { data, error } = await supabase
-      .from('stories')
-      .select('*')
-      .order('created_at', { ascending: false });
+      .from("stories")
+      .select("*")
+      .order("created_at", { ascending: false });
 
+    if (!error && data) {
+      setStories(data);
+    }
+  };
+
+  const uploadImage = async (file: File): Promise<string | null> => {
+    const filePath = `stories/${file.name}-${Date.now()}`;
+    const { error } = await supabase.storage.from("stories-images").upload(filePath, file);
     if (error) {
-      console.error('Failed to load stories:', error.message);
-      return;
+      console.error("Upload error:", error.message);
+      return null;
     }
 
-    setStories(data as Story[]);
+    const { data } = supabase.storage.from("stories-images").getPublicUrl(filePath);
+    return data?.publicUrl ?? null;
   };
 
-  const handleAddStory = async () => {
-    if (!session) {
-      setError('You must be logged in to add stories.');
-      return;
-    }
+const handleSubmit = async (e: FormEvent) => {
+  e.preventDefault();
 
-    if (!navigator.geolocation) {
-      setError('Geolocation is not supported by your browser.');
-      return;
-    }
+  if (!position || !session) return;
 
-    navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        const { latitude, longitude } = position.coords;
+  const email = session.user.email;
+  let imageUrl: string | null = null;
+  if (image) {
+    imageUrl = await uploadImage(image);
+  }
 
-        const { error } = await supabase.from('stories').insert({
-          latitude,
-          longitude,
-          content: storyText || '(No story)',
-          email: session.user.email,
-          is_public: true,
-          // location_name and image_url can be added here if needed
-        });
+  const { error } = await supabase.from("stories").insert({
+    latitude: position.lat,
+    longitude: position.lng,
+    content,
+    email,
+    location_name: locationName,
+    image_url: imageUrl,
+  });
 
-        if (error) {
-          setError('Failed to save story: ' + error.message);
-          console.error(error);
-          return;
-        }
-
-        setStoryText('');
-        setCurrentLocation({ lat: latitude, lng: longitude });
-        setError(null);
-        fetchStories();
-      },
-      (err) => {
-        setError('Failed to get location: ' + err.message);
-        console.error(err);
-      }
-    );
-  };
-
-  useEffect(() => {
+  if (!error) {
+    setContent("");
+    setImage(null);
+    setLocationName("");
     fetchStories();
+  } else {
+    console.error("Insert error:", error.message);
+  }
+};
 
-    const channel = supabase
-      .channel('realtime-stories')
-      .on(
-        'postgres_changes',
-        { event: 'INSERT', schema: 'public', table: 'stories' },
-        (payload) => {
-          const newStory = payload.new as Story;
-          setStories((prev) => [newStory, ...prev]);
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, []);
 
   return (
     <div>
-      <textarea
-        placeholder="Write your story here..."
-        value={storyText}
-        onChange={(e) => setStoryText(e.target.value)}
-        style={{ width: '100%', height: '80px', marginBottom: '0.5rem' }}
-      />
-      <br />
-      <button onClick={handleAddStory}>📝 Add Story</button>
+      <h2>Tambahkan Cerita Lokasi</h2>
+      <form onSubmit={handleSubmit} style={{ marginBottom: "1rem" }}>
+        <textarea
+          placeholder="Isi ceritamu..."
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+          style={{ width: "100%", padding: "0.5rem", marginBottom: "0.5rem" }}
+        />
+        <input
+          type="text"
+          placeholder="Nama lokasi (opsional)"
+          value={locationName}
+          onChange={(e) => setLocationName(e.target.value)}
+          style={{ width: "100%", padding: "0.5rem", marginBottom: "0.5rem" }}
+        />
+        <input
+          type="file"
+          accept="image/*"
+          onChange={(e: ChangeEvent<HTMLInputElement>) => {
+            if (e.target.files?.[0]) {
+              setImage(e.target.files[0]);
+            }
+          }}
+        />
+        <button type="submit" style={{ padding: "0.5rem 1rem" }}>Kirim Cerita</button>
+      </form>
 
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-
-      <div style={{ height: '500px', marginTop: '1rem' }}>
-        <MapContainer
-          center={currentLocation}
-          zoom={13}
-          scrollWheelZoom={false}
-          style={{ height: '100%', width: '100%' }}
-        >
+      {position && (
+        <MapContainer center={position} zoom={13} scrollWheelZoom={false} style={{ height: "500px", width: "100%" }}>
           <TileLayer
             url={`https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=${MAPTILER_KEY}`}
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://www.maptiler.com/">MapTiler</a>'
+            attribution='&copy; OpenStreetMap & MapTiler'
           />
-
           {stories.map((story) => (
             <Marker
               key={story.id}
-              position={{ lat: story.latitude, lng: story.longitude }}
+              position={{ lat: Number(story.latitude), lng: Number(story.longitude) }}
+              icon={L.icon({ iconUrl: "https://cdn-icons-png.flaticon.com/512/854/854878.png", iconSize: [32, 32] })}
             >
               <Popup>
-                <strong>{story.email}</strong>
-                <br />
-                {story.content}
-                {story.location_name && (
-                  <>
-                    <br />
-                    <em>{story.location_name}</em>
-                  </>
-                )}
-                {story.image_url && (
-                  <>
-                    <br />
-                    <img
-                      src={story.image_url}
-                      alt="Story image"
-                      style={{ maxWidth: '100px', maxHeight: '100px', marginTop: '0.5rem' }}
-                    />
-                  </>
-                )}
+                <strong>{story.location_name ?? "Tanpa Nama Lokasi"}</strong><br />
+                {story.content}<br />
+                {story.image_url && <img src={story.image_url} alt="Story" style={{ width: "100%", maxHeight: "100px" }} />}
               </Popup>
             </Marker>
           ))}
         </MapContainer>
-      </div>
+      )}
     </div>
   );
 };
 
-export default GeoLocation;
+export default Geolocation;
