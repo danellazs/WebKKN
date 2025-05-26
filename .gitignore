@@ -13,7 +13,8 @@ dist-ssr
 *.local
 
 # Database
-supabase-client.ts
+.env.local
+
 
 
 # Editor directories and files
