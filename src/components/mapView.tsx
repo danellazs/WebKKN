@@ -1,6 +1,5 @@
 // src/components/MapView.tsx
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import L from 'leaflet';
 import { useEffect } from "react";
 
 import { useState } from "react";

@@ -1,4 +1,3 @@
-import React from 'react';
 import type { ReactNode } from 'react';
 import { supabase } from '../supabase-client';
 import type { Session } from '@supabase/supabase-js';

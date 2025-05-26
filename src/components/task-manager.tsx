@@ -1,6 +1,5 @@
 import { useContext, useEffect, useState } from "react";
 import { SessionContext } from "../context/sessionContext";
-import type { Session } from "@supabase/supabase-js";
 import type { ChangeEvent } from "react";
 import { supabase } from "../supabase-client";
 

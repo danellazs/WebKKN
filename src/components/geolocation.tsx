@@ -3,7 +3,6 @@ import { SessionContext } from '../context/sessionContext'; // path may vary
 import { supabase } from '../supabase-client';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import type { Session } from '@supabase/supabase-js';
 
 const slemanCenter = { lat: -7.733, lng: 110.355 };
 
