@@ -9,7 +9,7 @@ import ConversationPanel from "./conversationPanel";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 
-import type { Story } from "../context/story"; // sudah disatukan definisinya
+import type { Story } from "../types/story"; // sudah disatukan definisinya
 
 
 const MAPTILER_KEY = 'GB6tFeFIv9m9TNPuiCXF';

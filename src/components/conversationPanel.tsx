@@ -2,7 +2,7 @@ import { useState, useEffect, useContext } from "react";
 import { supabase } from "../supabase-client";
 import { SessionContext } from "../context/sessionContext";
 
-import type { Story } from "../context/story"; // sudah disatukan definisinya
+import type { Story } from "../types/story"; // sudah disatukan definisinya
 
 
 interface Comment {
