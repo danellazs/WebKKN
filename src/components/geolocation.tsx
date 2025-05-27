@@ -3,6 +3,8 @@ import { SessionContext } from "../context/sessionContext";
 import type { FormEvent } from "react";
 import type { ChangeEvent } from "react";
 import { supabase } from "../supabase-client";
+import ConversationPanel from "./conversationPanel";
+
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 
@@ -31,6 +33,8 @@ const Geolocation = () => {
   const [image, setImage] = useState<File | null>(null);
   const [stories, setStories] = useState<Story[]>([]);
   const [locationName, setLocationName] = useState("");
+  const [selectedStoryId, setSelectedStoryId] = useState<number | null>(null);
+
 
   // Fetch location
   useEffect(() => {
@@ -128,27 +132,40 @@ const handleSubmit = async (e: FormEvent) => {
       </form>
 
       {position && (
-        <MapContainer center={position} zoom={13} scrollWheelZoom={false} style={{ height: "500px", width: "100%" }}>
-          <TileLayer
-            url={`https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=${MAPTILER_KEY}`}
-            attribution='&copy; OpenStreetMap & MapTiler'
-          />
-          {stories.map((story) => (
-            <Marker
-              key={story.id}
-              position={{ lat: Number(story.latitude), lng: Number(story.longitude) }}
-              icon={L.icon({ iconUrl: "https://cdn-icons-png.flaticon.com/512/854/854878.png", iconSize: [32, 32] })}
-            >
-              <Popup>
-                <strong>{story.location_name ?? "Tanpa Nama Lokasi"}</strong><br />
-                <em>oleh: {story.users?.name ?? "Anonim"}</em><br />
-                {story.content}<br />
-                {story.image_url && <img src={story.image_url} alt="Story" style={{ width: "100%", maxHeight: "100px" }} />}
-              </Popup>
-            </Marker>
-          ))}
-        </MapContainer>
-      )}
+      <MapContainer center={position} zoom={13} scrollWheelZoom={false} style={{ height: "500px", width: "100%" }}>
+        <TileLayer
+          url={`https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=${MAPTILER_KEY}`}
+          attribution='&copy; OpenStreetMap & MapTiler'
+        />
+        {stories.map((story) => (
+          <Marker
+            key={story.id}
+            position={{ lat: Number(story.latitude), lng: Number(story.longitude) }}
+            icon={L.icon({ iconUrl: "https://cdn-icons-png.flaticon.com/512/854/854878.png", iconSize: [32, 32] })}
+          >
+            <Popup>
+              <strong>{story.location_name ?? "Tanpa Nama Lokasi"}</strong><br />
+              <em>oleh: {story.users?.name ?? "Anonim"}</em><br />
+              {story.content}<br />
+              {story.image_url && <img src={story.image_url} alt="Story" style={{ width: "100%", maxHeight: "100px" }} />}
+              <br />
+              <a href="#" onClick={(e) => { e.preventDefault(); setSelectedStoryId(story.id); }} style={{ fontSize: "0.8rem", color: "#007bff" }}>
+                Perbesar
+              </a>
+            </Popup>
+          </Marker>
+        ))}
+      </MapContainer>
+    )}
+
+    {selectedStoryId && (
+      <ConversationPanel
+        storyId={selectedStoryId}
+        onClose={() => setSelectedStoryId(null)}
+      />
+    )}
+
+
     </div>
   );
 };
