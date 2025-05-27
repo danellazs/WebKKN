@@ -4,6 +4,7 @@ import { Auth } from "./components/auth";
 import Geolocation from './components/geolocation';
 import { supabase } from "./supabase-client";
 import { SessionContext } from "./context/sessionContext";
+import LocalVerificationButton from "./components/localVerification";
 
 function App() {
   const [session, setSession] = useState<any>(null);
@@ -37,6 +38,7 @@ function App() {
           <button onClick={logout}>Log Out</button>
           {/* Remove passing session as prop */}
           <Geolocation />
+          <LocalVerificationButton />
         </>
       ) : (
         <Auth />
