@@ -5,6 +5,9 @@ import Geolocation from './components/geolocation';
 import { supabase } from "./supabase-client";
 import { SessionContext } from "./context/sessionContext";
 import LocalVerificationButton from "./components/localVerification";
+import QuizGame from './components/quizGame';
+
+
 
 function App() {
   const [session, setSession] = useState<any>(null);
@@ -39,6 +42,7 @@ function App() {
           {/* Remove passing session as prop */}
           <Geolocation />
           <LocalVerificationButton />
+          <QuizGame />
         </>
       ) : (
         <Auth />
