@@ -4,10 +4,11 @@ import type { FormEvent } from "react";
 import type { ChangeEvent } from "react";
 import { supabase } from "../supabase-client";
 import ConversationPanel from "./conversationPanel";
+import StoryMarkerGroup, { groupStoriesByLocation } from "./storyGroup";
 
 
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import L from "leaflet";
+
+import { MapContainer, TileLayer } from "react-leaflet";
 
 import type { Story } from "../types/story"; // sudah disatukan definisinya
 
@@ -73,7 +74,7 @@ const handleSubmit = async (e: FormEvent) => {
     imageUrl = await uploadImage(image);
   }
 
-  const { error } = await supabase.from("stories").insert({
+  const { data, error } = await supabase.from("stories").insert({
     latitude: position.lat,
     longitude: position.lng,
     content,
@@ -81,13 +82,13 @@ const handleSubmit = async (e: FormEvent) => {
     email: email, 
     location_name: locationName,
     image_url: imageUrl,
-  });
+  }).select().single();
 
   if (!error) {
     setContent("");
     setImage(null);
     setLocationName("");
-    fetchStories();
+    setStories((prevStories) => [data, ...prevStories]);
   } else {
     console.error("Insert error:", error.message);
   }
@@ -129,27 +130,16 @@ const handleSubmit = async (e: FormEvent) => {
           url={`https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=${MAPTILER_KEY}`}
           attribution='&copy; OpenStreetMap & MapTiler'
         />
-        {stories.map((story) => (
-          <Marker
-            key={story.id}
-            position={{ lat: Number(story.latitude), lng: Number(story.longitude) }}
-            icon={L.icon({ iconUrl: "https://cdn-icons-png.flaticon.com/512/854/854878.png", iconSize: [32, 32] })}
-          >
-            <Popup>
-              <strong>{story.location_name ?? "Tanpa Nama Lokasi"}</strong><br />
-              <em>oleh: {story.users?.name ?? "Anonim"}</em><br />
-              {story.content}<br />
-              {story.image_url && <img src={story.image_url} alt="Story" style={{ width: "100%", maxHeight: "100px" }} />}
-              <br />
-              <a href="#" onClick={(e) => { 
-                e.preventDefault(); 
-                setSelectedStory(story); 
-              }} style={{ fontSize: "0.8rem", color: "#007bff" }}>
-                Perbesar
-              </a>
-            </Popup>
-          </Marker>
+        {groupStoriesByLocation(stories).map((storyGroup: Story[], index: number) => (
+          <StoryMarkerGroup
+            key={index}
+            stories={storyGroup}
+            onSelectStory={(story) => setSelectedStory(story)}
+          />
         ))}
+
+        
+
       </MapContainer>
     )}
 
