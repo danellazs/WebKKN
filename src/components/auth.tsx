@@ -34,6 +34,7 @@ const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
 
       // Masukkan data ke tabel users
       const { error: insertError } = await supabase.from("users").insert({
+        id: user.id, 
         email,
         name,
         isLocal: null, // bisa dihilangkan karena default null

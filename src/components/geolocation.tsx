@@ -13,7 +13,9 @@ interface Story {
   content: string;
   image_url?: string;
   location_name?: string;
-  email: string;
+  users?: {   // CHANGES HERE: tambah relasi user
+    name: string;
+  };
 }
 
 const MAPTILER_KEY = 'GB6tFeFIv9m9TNPuiCXF';
@@ -42,7 +44,7 @@ const Geolocation = () => {
   const fetchStories = async () => {
     const { data, error } = await supabase
       .from("stories")
-      .select("*")
+      .select(`*, users(name)`)
       .order("created_at", { ascending: false });
 
     if (!error && data) {
@@ -67,7 +69,9 @@ const handleSubmit = async (e: FormEvent) => {
 
   if (!position || !session) return;
 
-  const email = session.user.email;
+  const email = session.user.email; // should exist if logged in
+  const userId = session.user.id;
+
   let imageUrl: string | null = null;
   if (image) {
     imageUrl = await uploadImage(image);
@@ -77,7 +81,8 @@ const handleSubmit = async (e: FormEvent) => {
     latitude: position.lat,
     longitude: position.lng,
     content,
-    email,
+    user_id: userId, 
+    email: email, 
     location_name: locationName,
     image_url: imageUrl,
   });
@@ -136,6 +141,7 @@ const handleSubmit = async (e: FormEvent) => {
             >
               <Popup>
                 <strong>{story.location_name ?? "Tanpa Nama Lokasi"}</strong><br />
+                <em>oleh: {story.users?.name ?? "Anonim"}</em><br />
                 {story.content}<br />
                 {story.image_url && <img src={story.image_url} alt="Story" style={{ width: "100%", maxHeight: "100px" }} />}
               </Popup>
