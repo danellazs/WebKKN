@@ -40,3 +40,91 @@
 .read-the-docs {
   color: #888;
 }
+
+.conversation-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.conversation-modal {
+  background: white;
+  padding: 1rem;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 90%;
+  overflow-y: auto;
+  position: relative;
+}
+
+.conversation-closeBtn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.conversation-story {
+  margin-bottom: 1rem;
+}
+
+.conversation-story-image {
+  width: 100%;
+  max-height: 100px;
+  object-fit: cover;
+  margin-top: 0.5rem;
+}
+
+.conversation-comments {
+  max-height: 200px;
+  overflow-y: auto;
+  margin-bottom: 0.5rem;
+}
+
+.conversation-comment {
+  margin-bottom: 0.5rem;
+}
+
+.conversation-time {
+  font-size: 0.75rem;
+  color: #666;
+}
+
+.conversation-input {
+  width: 100%;
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.conversation-sendBtn {
+  margin-top: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.conversation-badge {
+  background-color: #28a745;
+  color: white;
+  border-radius: 4px;
+  padding: 0 6px;
+  font-size: 0.75rem;
+  margin-left: 6px;
+  font-weight: bold;
+}

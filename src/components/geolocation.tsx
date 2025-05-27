@@ -5,20 +5,12 @@ import type { ChangeEvent } from "react";
 import { supabase } from "../supabase-client";
 import ConversationPanel from "./conversationPanel";
 
+
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 
-interface Story {
-  id: number;
-  latitude: number;
-  longitude: number;
-  content: string;
-  image_url?: string;
-  location_name?: string;
-  users?: {   // CHANGES HERE: tambah relasi user
-    name: string;
-  };
-}
+import type { Story } from "../context/story"; // sudah disatukan definisinya
+
 
 const MAPTILER_KEY = 'GB6tFeFIv9m9TNPuiCXF';
 
@@ -33,7 +25,7 @@ const Geolocation = () => {
   const [image, setImage] = useState<File | null>(null);
   const [stories, setStories] = useState<Story[]>([]);
   const [locationName, setLocationName] = useState("");
-  const [selectedStoryId, setSelectedStoryId] = useState<number | null>(null);
+  const [selectedStory, setSelectedStory] = useState<Story | null>(null);
 
 
   // Fetch location
@@ -149,7 +141,10 @@ const handleSubmit = async (e: FormEvent) => {
               {story.content}<br />
               {story.image_url && <img src={story.image_url} alt="Story" style={{ width: "100%", maxHeight: "100px" }} />}
               <br />
-              <a href="#" onClick={(e) => { e.preventDefault(); setSelectedStoryId(story.id); }} style={{ fontSize: "0.8rem", color: "#007bff" }}>
+              <a href="#" onClick={(e) => { 
+                e.preventDefault(); 
+                setSelectedStory(story); 
+              }} style={{ fontSize: "0.8rem", color: "#007bff" }}>
                 Perbesar
               </a>
             </Popup>
@@ -158,10 +153,10 @@ const handleSubmit = async (e: FormEvent) => {
       </MapContainer>
     )}
 
-    {selectedStoryId && (
+    {selectedStory && (
       <ConversationPanel
-        storyId={selectedStoryId}
-        onClose={() => setSelectedStoryId(null)}
+        story={selectedStory}
+        onClose={() => setSelectedStory(null)}
       />
     )}
 
