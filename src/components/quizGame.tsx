@@ -2,6 +2,7 @@ import { useEffect, useState, useContext } from "react";
 import { supabase } from "../supabase-client";
 import { SessionContext } from "../context/sessionContext";
 import PointDisplay from "./pointDisplay";
+import Gacha from "./gacha"; // ⬅️ pastikan kamu import ini
 
 type QuizChoice = {
   id: string;
@@ -21,18 +22,39 @@ const QuizGame = () => {
   const [answers, setAnswers] = useState<{ [key: string]: string }>({});
   const [submitted, setSubmitted] = useState(false);
   const [score, setScore] = useState(0);
-
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
-  
+  // ✅ Tambah state untuk poin
+  const [points, setPoints] = useState(0);
 
+  // ✅ Fetch total poin user
+  const fetchPoints = async () => {
+    if (!session) return;
+
+    const { data} = await supabase
+      .from("points")
+      .select("value")
+      .eq("user_id", session.user.id);
+
+    if (data) {
+      const total = data.reduce((sum, row) => sum + row.value, 0);
+      setPoints(total);
+    }
+  };
+
+  // ✅ Fetch quiz saat mount
   useEffect(() => {
     fetchQuiz();
   }, []);
 
+  // ✅ Fetch points tiap trigger berubah
+  useEffect(() => {
+    fetchPoints();
+  }, [session, refreshTrigger]);
+
   const fetchQuiz = async () => {
     const { data: questionsData, error } = await supabase
-      .rpc('get_random_quiz_questions', { count: 3 });
+      .rpc("get_random_quiz_questions", { count: 3 });
 
     if (error) {
       console.error("Fetch error:", error.message);
@@ -78,6 +100,7 @@ const QuizGame = () => {
     setScore(correct * 10);
     setSubmitted(true);
 
+    // ✅ Trigger untuk refresh points dan child component
     setRefreshTrigger(prev => prev + 1);
   };
 
@@ -111,8 +134,13 @@ const QuizGame = () => {
         <p>Skor kamu: {score} poin</p>
       )}
 
-      {/* Highlight 3: Render PointsDisplay dengan prop refreshTrigger */}
       <PointDisplay refreshTrigger={refreshTrigger} />
+
+      {/* ✅ Tambah Gacha dan passing state-nya */}
+      <Gacha
+        points={points}
+        refreshPoints={() => setRefreshTrigger(prev => prev + 1)}
+      />
     </div>
   );
 };
