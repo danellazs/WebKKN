@@ -52,11 +52,7 @@ const StoryMarkerGroup = ({ stories, onSelectStory, isHotspot = false  }: Props)
   return (
     <Marker
       position={position}
-      icon={L.icon({
-        iconUrl: "https://cdn-icons-png.flaticon.com/512/854/854878.png",
-        iconSize: [32, 32],
-        
-      })}
+      icon={customIcon}
       eventHandlers={{
         click: () => onSelectStory(stories[0]),
       }}
