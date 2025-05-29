@@ -53,7 +53,12 @@ const Geolocation = () => {
     if (!session) return <p>Silakan login terlebih dahulu untuk menambahkan cerita.</p>;
 
 
-  const [position, setPosition] = useState<{ lat: number; lng: number } | null>(null);
+  const [position, setPosition] = useState<{
+    lat: number;
+    lng: number;
+    timestamp: number; // milliseconds since epoch
+  } | null>(null);
+
   const [content, setContent] = useState("");
   const [image, setImage] = useState<File | null>(null);
   const [stories, setStories] = useState<Story[]>([]);
@@ -63,23 +68,32 @@ const Geolocation = () => {
 
   // Fetch location
   useEffect(() => {
-  navigator.geolocation.getCurrentPosition(
-    (pos) => {
-      const { latitude, longitude } = pos.coords;
-      setPosition({ lat: latitude, lng: longitude });
-    },
-    (err) => {
-      console.error("Error getting location:", err.message);
-    },
-    {
-      enableHighAccuracy: true,
-      maximumAge: 0, // don't use cached location
-      timeout: 10000,
-    }
-  );
+    const watchId = navigator.geolocation.watchPosition(
+      (pos) => {
+        const { latitude, longitude } = pos.coords;
+        setPosition({
+          lat: latitude,
+          lng: longitude,
+          timestamp: Date.now(), // record when it was updated
+        });
+      },
+      (err) => {
+        console.error("Error watching location:", err.message);
+      },
+      {
+        enableHighAccuracy: true,
+        maximumAge: 0,
+        timeout: 10000,
+      }
+    );
 
-  fetchStories();
-}, []);
+    fetchStories();
+
+    return () => {
+      navigator.geolocation.clearWatch(watchId);
+    };
+  }, []);
+
 
 
   const fetchStories = async () => {
@@ -108,50 +122,48 @@ const Geolocation = () => {
 const handleSubmit = async (e: FormEvent) => {
   e.preventDefault();
 
-  if (!session) return;
+  if (!session || !position) {
+    alert("Lokasi belum tersedia. Silakan tunggu beberapa saat.");
+    return;
+  }
 
-  // Get fresh position at submission time
-  navigator.geolocation.getCurrentPosition(
-    async (pos) => {
-      const { latitude, longitude } = pos.coords;
-      console.log("Current location obtained:", latitude, longitude);
+  const now = Date.now();
+  const locationAge = now - position.timestamp;
+  const fiveMinutes = 5 * 60 * 1000;
 
-      const email = session.user.email;
-      const userId = session.user.id;
+  if (locationAge > fiveMinutes) {
+    alert("Lokasi terlalu lama. Mohon tunggu hingga lokasi diperbarui.");
+    return;
+  }
 
-      let imageUrl: string | null = null;
-      if (image) {
-        imageUrl = await uploadImage(image);
-      }
+  const { lat: latitude, lng: longitude } = position;
+  const email = session.user.email;
+  const userId = session.user.id;
 
-      const { data, error } = await supabase.from("stories").insert({
-        latitude,
-        longitude,
-        content,
-        user_id: userId,
-        email,
-        location_name: locationName,
-        image_url: imageUrl,
-      }).select().single();
+  let imageUrl: string | null = null;
+  if (image) {
+    imageUrl = await uploadImage(image);
+  }
 
-      if (!error) {
-        setContent("");
-        setImage(null);
-        setLocationName("");
-        setStories((prevStories) => [data, ...prevStories]);
-      } else {
-        console.error("Insert error:", error.message);
-      }
-    },
-    (error) => {
-      console.error("Could not get current position:", error.message);
-      alert("Gagal mendapatkan lokasi saat ini. Silakan coba lagi.");
-    },
-    { enableHighAccuracy: true, timeout: 5000 }
-  );
+  const { data, error } = await supabase.from("stories").insert({
+    latitude,
+    longitude,
+    content,
+    user_id: userId,
+    email,
+    location_name: locationName,
+    image_url: imageUrl,
+  }).select().single();
+
+  if (!error) {
+    setContent("");
+    setImage(null);
+    setLocationName("");
+    setStories((prevStories) => [data, ...prevStories]);
+  } else {
+    console.error("Insert error:", error.message);
+  }
 };
-
-
 
   return (
     <div>
