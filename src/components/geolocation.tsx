@@ -8,7 +8,7 @@ import StoryMarkerGroup from "./storyGroup";
 import { MapContainer, TileLayer } from "react-leaflet";
 
 import type { Story } from "../types/story"; // sudah disatukan definisinya
-
+const fixedCenter = { lat: -7.75, lng: 110.38 }; // Sleman approx coords
 
 const MAPTILER_KEY = 'GB6tFeFIv9m9TNPuiCXF';
 
@@ -63,12 +63,24 @@ const Geolocation = () => {
 
   // Fetch location
   useEffect(() => {
-    navigator.geolocation.getCurrentPosition((pos) => {
+  navigator.geolocation.getCurrentPosition(
+    (pos) => {
       const { latitude, longitude } = pos.coords;
       setPosition({ lat: latitude, lng: longitude });
-    });
-    fetchStories();
-  }, []);
+    },
+    (err) => {
+      console.error("Error getting location:", err.message);
+    },
+    {
+      enableHighAccuracy: true,
+      maximumAge: 0, // don't use cached location
+      timeout: 10000,
+    }
+  );
+
+  fetchStories();
+}, []);
+
 
   const fetchStories = async () => {
     const { data, error } = await supabase
@@ -96,35 +108,49 @@ const Geolocation = () => {
 const handleSubmit = async (e: FormEvent) => {
   e.preventDefault();
 
-  if (!position || !session) return;
+  if (!session) return;
 
-  const email = session.user.email; // should exist if logged in
-  const userId = session.user.id;
+  // Get fresh position at submission time
+  navigator.geolocation.getCurrentPosition(
+    async (pos) => {
+      const { latitude, longitude } = pos.coords;
+      console.log("Current location obtained:", latitude, longitude);
 
-  let imageUrl: string | null = null;
-  if (image) {
-    imageUrl = await uploadImage(image);
-  }
+      const email = session.user.email;
+      const userId = session.user.id;
 
-  const { data, error } = await supabase.from("stories").insert({
-    latitude: position.lat,
-    longitude: position.lng,
-    content,
-    user_id: userId, 
-    email: email, 
-    location_name: locationName,
-    image_url: imageUrl,
-  }).select().single();
+      let imageUrl: string | null = null;
+      if (image) {
+        imageUrl = await uploadImage(image);
+      }
 
-  if (!error) {
-    setContent("");
-    setImage(null);
-    setLocationName("");
-    setStories((prevStories) => [data, ...prevStories]);
-  } else {
-    console.error("Insert error:", error.message);
-  }
+      const { data, error } = await supabase.from("stories").insert({
+        latitude,
+        longitude,
+        content,
+        user_id: userId,
+        email,
+        location_name: locationName,
+        image_url: imageUrl,
+      }).select().single();
+
+      if (!error) {
+        setContent("");
+        setImage(null);
+        setLocationName("");
+        setStories((prevStories) => [data, ...prevStories]);
+      } else {
+        console.error("Insert error:", error.message);
+      }
+    },
+    (error) => {
+      console.error("Could not get current position:", error.message);
+      alert("Gagal mendapatkan lokasi saat ini. Silakan coba lagi.");
+    },
+    { enableHighAccuracy: true, timeout: 5000 }
+  );
 };
+
 
 
   return (
@@ -157,7 +183,7 @@ const handleSubmit = async (e: FormEvent) => {
       </form>
 
       {position && (
-      <MapContainer center={position} zoom={13} scrollWheelZoom={false} style={{ height: "500px", width: "100%" }}>
+      <MapContainer center={fixedCenter} zoom={13} scrollWheelZoom={false} style={{ height: "500px", width: "100%" }}>
         <TileLayer
           url={`https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=${MAPTILER_KEY}`}
           attribution='&copy; OpenStreetMap & MapTiler'
