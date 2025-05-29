@@ -5,9 +5,6 @@ import type { ChangeEvent } from "react";
 import { supabase } from "../supabase-client";
 import ConversationPanel from "./conversationPanel";
 import StoryMarkerGroup from "./storyGroup";
-
-
-
 import { MapContainer, TileLayer } from "react-leaflet";
 
 import type { Story } from "../types/story"; // sudah disatukan definisinya
