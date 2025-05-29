@@ -271,6 +271,10 @@ const handleSubmit = async (e: FormEvent) => {
       <ConversationPanel
         story={selectedStory}
         onClose={() => setSelectedStory(null)}
+        onDelete={() => {
+          setSelectedStory(null);
+          fetchStories(); // reload peta
+  }}
       />
     )}
 

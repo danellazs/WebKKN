@@ -10,4 +10,5 @@ export interface Story {
   users?: {
     name: string;
   };
+    user_id?: string;
 }

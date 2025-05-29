@@ -18,13 +18,17 @@ interface Comment {
 const ConversationPanel = ({
   story,
   onClose,
+  onDelete,
 }: {
   story: Story;
   onClose: () => void;
+  onDelete: () => void;
 }) => {
   const session = useContext(SessionContext);
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState("");
+
+  const isOwner = session?.user.id === story.user_id;
 
   useEffect(() => {
     fetchComments();
@@ -62,6 +66,19 @@ const ConversationPanel = ({
     }
   };
 
+  const handleDeleteStory = async () => {
+    const confirm = window.confirm("Apakah Anda yakin ingin menghapus cerita ini beserta semua komentar?");
+    if (!confirm) return;
+
+    const { error } = await supabase.from("stories").delete().eq("id", story.id);
+
+    if (error) {
+      alert("Gagal menghapus cerita: " + error.message);
+    } else {
+      onDelete(); // trigger refresh di parent
+    }
+  };
+
   return (
     <div className="conversation-overlay">
       <div className="conversation-modal">
@@ -78,6 +95,15 @@ const ConversationPanel = ({
             <img src={story.image_url} alt="Story" className="conversation-story-image" />
           )}
         </div>
+
+        {isOwner && (
+          <button
+            onClick={handleDeleteStory}
+            style={{ backgroundColor: "red", color: "white", margin: "0.5rem 0" }}
+          >
+            Hapus Cerita
+          </button>
+        )}
 
         <h4>Diskusi</h4>
         <div className="conversation-comments">
