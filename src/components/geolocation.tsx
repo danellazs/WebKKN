@@ -65,12 +65,50 @@ const Geolocation = () => {
   const [locationName, setLocationName] = useState("");
   const [selectedStory, setSelectedStory] = useState<Story | null>(null);
 
+  const refreshLocation = () => {
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const { latitude, longitude, accuracy } = pos.coords;
+        if (accuracy > 100) {
+          alert("Akurasi lokasi terlalu rendah. Coba di luar ruangan.");
+          return;
+        }
+        if (latitude === 0 && longitude === 0) {
+          alert("Lokasi tidak valid (0,0). Pastikan GPS aktif."); // 🔧
+          return;
+        }
+        setPosition({
+          lat: latitude,
+          lng: longitude,
+          timestamp: Date.now(),
+        });
+      },
+      (err) => {
+        console.error("Gagal memperbarui lokasi:", err.message);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+      }
+    );
+  };
+
+
 
   // Fetch location
   useEffect(() => {
     const watchId = navigator.geolocation.watchPosition(
       (pos) => {
-        const { latitude, longitude } = pos.coords;
+        const { latitude, longitude, accuracy } = pos.coords;
+        console.log("📡 watchPosition:", latitude, longitude, "akurasi:", accuracy);
+        if (accuracy && accuracy > 100) {
+          console.warn("Akurasi lokasi terlalu rendah:", accuracy);
+          return; // abaikan lokasi buruk
+        }
+        if (latitude === 0 && longitude === 0) {
+          console.warn("Lokasi 0,0 terdeteksi. Diabaikan."); // 🔧
+          return;
+        }
         setPosition({
           lat: latitude,
           lng: longitude,
@@ -137,6 +175,12 @@ const handleSubmit = async (e: FormEvent) => {
   }
 
   const { lat: latitude, lng: longitude } = position;
+
+  if (latitude === 0 && longitude === 0) {
+    alert("Lokasi tidak valid (0,0). Pastikan GPS aktif.");
+    return;
+  }
+
   const email = session.user.email;
   const userId = session.user.id;
 
@@ -160,6 +204,8 @@ const handleSubmit = async (e: FormEvent) => {
     setImage(null);
     setLocationName("");
     setStories((prevStories) => [data, ...prevStories]);
+    console.log("Mengirim koordinat:", position.lat, position.lng, "timestamp:", position.timestamp);
+
   } else {
     console.error("Insert error:", error.message);
   }
@@ -192,9 +238,16 @@ const handleSubmit = async (e: FormEvent) => {
           }}
         />
         <button type="submit" style={{ padding: "0.5rem 1rem" }}>Kirim Cerita</button>
+        <button onClick={refreshLocation}>Perbarui Lokasi</button>
+
       </form>
 
       {position && (
+        <p>📍 Posisi saat ini: {position.lat.toFixed(5)}, {position.lng.toFixed(5)}</p>
+      )}
+
+      {position && (
+        
       <MapContainer center={fixedCenter} zoom={13} scrollWheelZoom={false} style={{ height: "500px", width: "100%" }}>
         <TileLayer
           url={`https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=${MAPTILER_KEY}`}
