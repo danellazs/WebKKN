@@ -189,7 +189,7 @@ const handleSubmit = async (e: FormEvent) => {
     imageUrl = await uploadImage(image);
   }
 
-  const { data, error } = await supabase.from("stories").insert({
+  const { error } = await supabase.from("stories").insert({
     latitude,
     longitude,
     content,
