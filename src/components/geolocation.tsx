@@ -68,6 +68,8 @@ const Geolocation = () => {
   const [tagInput, setTagInput] = useState("");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [tagSuggestions, setTagSuggestions] = useState<string[]>([]);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+
 
   const fetchTagSuggestions = async (query: string) => {
     const { data } = await supabase
@@ -150,12 +152,23 @@ const Geolocation = () => {
   const fetchStories = async () => {
     const { data, error } = await supabase
       .from("stories")
-      .select(`*, users(name)`)
+      .select(`
+        *,
+        users(name),
+        story_tags(
+          tags(name)
+        )
+      `)
       .order("created_at", { ascending: false });
 
     if (!error && data) {
-      setStories(data);
+      const storiesWithTags = data.map((story) => ({
+        ...story,
+        tags: story.story_tags.map((st: any) => st.tags.name),
+      }));
+      setStories(storiesWithTags);
     }
+
   };
 
   const uploadImage = async (file: File): Promise<string | null> => {
@@ -169,6 +182,11 @@ const Geolocation = () => {
     const { data } = supabase.storage.from("stories-images").getPublicUrl(filePath);
     return data?.publicUrl ?? null;
   };
+
+    const handleRemoveImage = () => {
+      setImage(null);
+      setImagePreview(null);
+    };
 
 const handleSubmit = async (e: FormEvent) => {
   e.preventDefault();
@@ -246,6 +264,78 @@ const handleSubmit = async (e: FormEvent) => {
       }
     }
 
+    // Setelah berhasil menambahkan cerita:
+const { data: newStory, error: insertError } = await supabase
+  .from("stories")
+  .insert([
+    {
+      content,
+      latitude: position?.lat,
+      longitude: position?.lng,
+      user_id: userId,
+      image_url: imageUrl,
+    },
+  ])
+  .select()
+  .single();
+
+if (insertError) {
+  console.error("Error inserting story:", insertError);
+  return;
+}
+
+if (newStory) {
+  const cleanedTags = selectedTags
+    .map((t) => t.trim().toLowerCase())
+    .filter(Boolean); // remove empty strings
+
+  const uniqueTags = Array.from(new Set(cleanedTags));
+
+  for (const tagName of uniqueTags) {
+    // 1. Cek apakah tag sudah ada
+    let { data: existingTag, error: tagFetchError } = await supabase
+      .from("tags")
+      .select("*")
+      .eq("name", tagName)
+      .single();
+
+    if (tagFetchError || !existingTag) {
+      // 2. Insert tag baru jika belum ada
+      const { data: newTag, error: tagInsertError } = await supabase
+        .from("tags")
+        .insert([{ name: tagName }])
+        .select()
+        .single();
+
+      if (tagInsertError) {
+        console.error("Error inserting tag:", tagInsertError);
+        continue;
+      }
+      existingTag = newTag;
+    }
+
+    // 3. Tambahkan relasi ke story_tags
+    const { error: storyTagInsertError } = await supabase
+      .from("story_tags")
+      .insert([{ story_id: newStory.id, tag_id: existingTag.id }]);
+
+    if (storyTagInsertError) {
+      console.error("Error linking tag to story:", storyTagInsertError);
+    }
+  }
+
+  // Reset form
+  setContent("");
+  setSelectedTags([]);
+  setImage(null);
+  setImagePreview(null);
+
+  // Refresh stories
+  fetchStories();
+}
+
+
+
   } else {
     console.error("Insert error:", error?.message);
   }
@@ -274,7 +364,10 @@ const handleSubmit = async (e: FormEvent) => {
           accept="image/*"
           onChange={(e: ChangeEvent<HTMLInputElement>) => {
             if (e.target.files?.[0]) {
-              setImage(e.target.files[0]);
+              const file = e.target.files[0];
+              setImage(file);
+              const previewUrl = URL.createObjectURL(file);
+              setImagePreview(previewUrl);
             }
           }}
         />
@@ -352,6 +445,31 @@ const handleSubmit = async (e: FormEvent) => {
             </span>
           ))}
         </div>
+
+        {imagePreview && (
+        <div style={{ marginBottom: "0.5rem" }}>
+          <img
+            src={imagePreview}
+            alt="Preview"
+            style={{ maxWidth: "100%", height: "auto", borderRadius: "8px" }}
+          />
+          <button
+            type="button"
+            onClick={handleRemoveImage}
+            style={{
+              display: "block",
+              marginTop: "0.5rem",
+              padding: "0.3rem 0.7rem",
+              backgroundColor: "#f8d7da",
+              border: "none",
+              borderRadius: "6px",
+              cursor: "pointer",
+            }}
+          >
+            Hapus Gambar
+          </button>
+        </div>
+      )}
 
         <button type="submit" style={{ padding: "0.5rem 1rem" }}>Kirim Cerita</button>
         <button onClick={refreshLocation}>Perbarui Lokasi</button>
