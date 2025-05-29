@@ -203,7 +203,7 @@ const handleSubmit = async (e: FormEvent) => {
     setContent("");
     setImage(null);
     setLocationName("");
-    setStories((prevStories) => [data, ...prevStories]);
+    fetchStories();
     console.log("Mengirim koordinat:", position.lat, position.lng, "timestamp:", position.timestamp);
 
   } else {
