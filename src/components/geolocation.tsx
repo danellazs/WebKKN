@@ -4,7 +4,7 @@ import type { FormEvent } from "react";
 import type { ChangeEvent } from "react";
 import { supabase } from "../supabase-client";
 import ConversationPanel from "./conversationPanel";
-import StoryMarkerGroup, { groupStoriesByLocation } from "./storyGroup";
+import StoryMarkerGroup from "./storyGroup";
 
 
 
@@ -14,6 +14,41 @@ import type { Story } from "../types/story"; // sudah disatukan definisinya
 
 
 const MAPTILER_KEY = 'GB6tFeFIv9m9TNPuiCXF';
+
+function haversineDistance(a: { lat: number, lng: number }, b: { lat: number, lng: number }) {
+  const R = 6371e3;
+  const φ1 = a.lat * Math.PI / 180;
+  const φ2 = b.lat * Math.PI / 180;
+  const Δφ = (b.lat - a.lat) * Math.PI / 180;
+  const Δλ = (b.lng - a.lng) * Math.PI / 180;
+  const x = Δλ * Math.cos((φ1 + φ2) / 2);
+  const d = Math.sqrt(Δφ * Δφ + x * x) * R;
+  return d;
+}
+
+function clusterNearbyStories(stories: Story[], radius = 20): Story[][] {
+  const clusters: Story[][] = [];
+
+  for (const story of stories) {
+    let added = false;
+    for (const cluster of clusters) {
+      const dist = haversineDistance(
+        { lat: story.latitude, lng: story.longitude },
+        { lat: cluster[0].latitude, lng: cluster[0].longitude }
+      );
+      if (dist <= radius) {
+        cluster.push(story);
+        added = true;
+        break;
+      }
+    }
+    if (!added) {
+      clusters.push([story]);
+    }
+  }
+  return clusters;
+}
+
 
 const Geolocation = () => {
 
@@ -130,11 +165,12 @@ const handleSubmit = async (e: FormEvent) => {
           url={`https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=${MAPTILER_KEY}`}
           attribution='&copy; OpenStreetMap & MapTiler'
         />
-        {groupStoriesByLocation(stories).map((storyGroup: Story[], index: number) => (
+        {clusterNearbyStories(stories).map((storyGroup, index) => (
           <StoryMarkerGroup
             key={index}
             stories={storyGroup}
             onSelectStory={(story) => setSelectedStory(story)}
+            isHotspot={storyGroup.length >= 5} // Threshold hotspot
           />
         ))}
 

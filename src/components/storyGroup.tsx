@@ -4,10 +4,13 @@ import { Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 import type { Story } from "../types/story";
 
+
 interface Props {
   stories: Story[];
   onSelectStory: (story: Story) => void;
+  isHotspot?: boolean; // ← baru ditambahkan
 }
+
 
 export function groupStoriesByLocation(stories: Story[]) {
   const grouped: { [key: string]: Story[] } = {};
@@ -23,7 +26,7 @@ export function groupStoriesByLocation(stories: Story[]) {
   return Object.values(grouped);
 }
 
-const StoryMarkerGroup = ({ stories, onSelectStory }: Props) => {
+const StoryMarkerGroup = ({ stories, onSelectStory, isHotspot = false  }: Props) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const currentStory = stories[currentIndex];
   const position = {
@@ -31,17 +34,38 @@ const StoryMarkerGroup = ({ stories, onSelectStory }: Props) => {
     lng: Number(currentStory.longitude),
   };
 
+    const customIcon = L.divIcon({
+    className: "", // remove default marker styling
+    html: `
+      <div style="position: relative; width: 40px; height: 40px;">
+        ${
+          isHotspot
+            ? `<img src="/pin-fire.png" style="position: absolute; top: 0; left: 0; width: 40px; height: 40px;"/>`
+            : ""
+        }
+        <img src="https://cdn-icons-png.flaticon.com/512/854/854878.png" style="position: absolute; top: 4px; left: 4px; width: 32px; height: 32px;"/>
+      </div>
+    `,
+    iconSize: [40, 40],
+  });
+  
   return (
     <Marker
       position={position}
       icon={L.icon({
         iconUrl: "https://cdn-icons-png.flaticon.com/512/854/854878.png",
         iconSize: [32, 32],
+        
       })}
+      eventHandlers={{
+        click: () => onSelectStory(stories[0]),
+      }}
+    
     >
       <Popup>
         <strong>{currentStory.location_name ?? "Tanpa Nama Lokasi"}</strong><br />
         <em>oleh: {currentStory.users?.name ?? "Anonim"}</em><br />
+        {isHotspot ? <strong>🔥 Hotspot! ({stories.length} cerita)</strong> : null}
         {currentStory.content}<br />
         {currentStory.image_url && (
           <img
