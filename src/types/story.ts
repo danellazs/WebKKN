@@ -11,4 +11,5 @@ export interface Story {
     name: string;
   };
     user_id?: string;
+  tags?: string[];
 }

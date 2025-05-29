@@ -6,8 +6,8 @@ import { supabase } from "../supabase-client";
 import ConversationPanel from "./conversationPanel";
 import StoryMarkerGroup from "./storyGroup";
 import { MapContainer, TileLayer } from "react-leaflet";
-
 import type { Story } from "../types/story"; // sudah disatukan definisinya
+
 const fixedCenter = { lat: -7.75, lng: 110.38 }; // Sleman approx coords
 
 const MAPTILER_KEY = 'GB6tFeFIv9m9TNPuiCXF';
@@ -64,6 +64,19 @@ const Geolocation = () => {
   const [stories, setStories] = useState<Story[]>([]);
   const [locationName, setLocationName] = useState("");
   const [selectedStory, setSelectedStory] = useState<Story | null>(null);
+  
+  const [tagInput, setTagInput] = useState("");
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [tagSuggestions, setTagSuggestions] = useState<string[]>([]);
+
+  const fetchTagSuggestions = async (query: string) => {
+    const { data } = await supabase
+      .from("tags")
+      .select("name")
+      .ilike("name", `%${query}%`);
+
+    setTagSuggestions(data?.map(tag => tag.name) || []);
+  };
 
   const refreshLocation = () => {
     navigator.geolocation.getCurrentPosition(
@@ -189,7 +202,7 @@ const handleSubmit = async (e: FormEvent) => {
     imageUrl = await uploadImage(image);
   }
 
-  const { error } = await supabase.from("stories").insert({
+  const { data: insertedStory, error } = await supabase.from("stories").insert({
     latitude,
     longitude,
     content,
@@ -199,17 +212,45 @@ const handleSubmit = async (e: FormEvent) => {
     image_url: imageUrl,
   }).select().single();
 
-  if (!error) {
+  if (!error && insertedStory) {
     setContent("");
     setImage(null);
     setLocationName("");
     fetchStories();
     console.log("Mengirim koordinat:", position.lat, position.lng, "timestamp:", position.timestamp);
 
+    // Untuk setiap tag:
+    for (const tagName of selectedTags) {
+      // Cari tag, kalau belum ada — buat
+      let { data: tag } = await supabase
+        .from("tags")
+        .select("id")
+        .eq("name", tagName)
+        .maybeSingle();
+
+      if (!tag) {
+        const res = await supabase
+          .from("tags")
+          .insert({ name: tagName })
+          .select()
+          .single();
+        tag = res.data;
+      }
+
+      // Hubungkan ke story
+      if (tag) {
+        await supabase.from("story_tags").insert({
+          story_id: insertedStory.id,
+          tag_id: tag.id,
+        });
+      }
+    }
+
   } else {
-    console.error("Insert error:", error.message);
+    console.error("Insert error:", error?.message);
   }
 };
+
 
   return (
     <div>
@@ -237,6 +278,81 @@ const handleSubmit = async (e: FormEvent) => {
             }
           }}
         />
+        <input
+          type="text"
+          placeholder="Tambah tag..."
+          value={tagInput}
+          onChange={(e) => {
+            const value = e.target.value;
+            setTagInput(value);
+            if (value.length > 1) {
+              fetchTagSuggestions(value);
+            } else {
+              setTagSuggestions([]);
+            }
+          }}
+          style={{ width: "100%", padding: "0.5rem", marginBottom: "0.25rem" }}
+        />
+        {tagSuggestions.length > 0 && (
+          <div style={{ marginBottom: "0.5rem" }}>
+            {tagSuggestions.map((suggestion) => (
+              <button
+                type="button"
+                key={suggestion}
+                onClick={() => {
+                  if (!selectedTags.includes(suggestion)) {
+                    setSelectedTags([...selectedTags, suggestion]);
+                  }
+                  setTagInput("");
+                  setTagSuggestions([]);
+                }}
+                style={{
+                  margin: "0.2rem",
+                  padding: "0.3rem 0.6rem",
+                  backgroundColor: "#eee",
+                  border: "1px solid #ccc",
+                  borderRadius: "10px",
+                  cursor: "pointer",
+                }}
+              >
+                #{suggestion}
+              </button>
+            ))}
+          </div>
+        )}
+        {/* Tag yang sudah dipilih */}
+        <div style={{ marginBottom: "0.5rem" }}>
+          {selectedTags.map((tag) => (
+            <span
+              key={tag}
+              style={{
+                display: "inline-block",
+                marginRight: "0.5rem",
+                marginBottom: "0.3rem",
+                backgroundColor: "#d1ecf1",
+                padding: "0.3rem 0.6rem",
+                borderRadius: "10px",
+              }}
+            >
+              #{tag}
+              <button
+                type="button"
+                onClick={() =>
+                  setSelectedTags(selectedTags.filter((t) => t !== tag))
+                }
+                style={{
+                  marginLeft: "0.3rem",
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                }}
+              >
+                ×
+              </button>
+            </span>
+          ))}
+        </div>
+
         <button type="submit" style={{ padding: "0.5rem 1rem" }}>Kirim Cerita</button>
         <button onClick={refreshLocation}>Perbarui Lokasi</button>
 

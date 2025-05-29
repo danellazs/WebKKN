@@ -19,16 +19,20 @@ const ConversationPanel = ({
   story,
   onClose,
   onDelete,
+  onTagClick, 
 }: {
   story: Story;
   onClose: () => void;
   onDelete: () => void;
+  onTagClick?: (tag: string) => void;
 }) => {
   const session = useContext(SessionContext);
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState("");
 
   const isOwner = session?.user.id === story.user_id;
+
+  
 
   useEffect(() => {
     fetchComments();
@@ -50,6 +54,7 @@ const ConversationPanel = ({
       setComments(normalized);
     }
   };
+  
 
   const handleSubmit = async () => {
     if (!session || !newComment.trim()) return;
@@ -120,6 +125,18 @@ const ConversationPanel = ({
               <div className="conversation-time">
                 {new Date(c.created_at).toLocaleString()}
               </div>
+              <div>
+              {story.tags?.map((tag: string) => (
+                <button
+                  key={tag}
+                  onClick={() => onTagClick?.(tag)}
+                  className="tag-chip"
+                >
+                  #{tag}
+                </button>
+              ))}
+            </div>
+
             </div>
           ))}
         </div>
