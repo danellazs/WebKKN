@@ -12,6 +12,8 @@ const fixedCenter = { lat: -7.75, lng: 110.38 }; // Sleman approx coords
 
 const MAPTILER_KEY = 'GB6tFeFIv9m9TNPuiCXF';
 
+
+
 function haversineDistance(a: { lat: number, lng: number }, b: { lat: number, lng: number }) {
   const R = 6371e3;
   const φ1 = a.lat * Math.PI / 180;
@@ -57,18 +59,23 @@ const Geolocation = () => {
     lat: number;
     lng: number;
     timestamp: number; // milliseconds since epoch
-  } | null>(null);
+  }>({
+  lat: -7.76162,
+  lng: 110.37717,
+  timestamp: Date.now(), // anggap selalu fresh
+});
 
   const [content, setContent] = useState("");
   const [image, setImage] = useState<File | null>(null);
   const [stories, setStories] = useState<Story[]>([]);
   const [locationName, setLocationName] = useState("");
   const [selectedStory, setSelectedStory] = useState<Story | null>(null);
-  
-  const [tagInput, setTagInput] = useState("");
+
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [tagSuggestions, setTagSuggestions] = useState<string[]>([]);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [currentTag, setCurrentTag] = useState<string>("");
+
 
 
   const fetchTagSuggestions = async (query: string) => {
@@ -164,7 +171,7 @@ const Geolocation = () => {
     if (!error && data) {
       const storiesWithTags = data.map((story) => ({
         ...story,
-        tags: story.story_tags.map((st: any) => st.tags.name),
+        selectedTags: story.story_tags.map((st: any) => st.tags.name),
       }));
       setStories(storiesWithTags);
     }
@@ -240,14 +247,7 @@ const handleSubmit = async (e: FormEvent) => {
     return;
   }
 
-  // ✅ Bersihkan dan unikkan tag
-  const cleanedTags = selectedTags
-    .map((t) => t.trim().toLowerCase())
-    .filter(Boolean);
-
-  const uniqueTags = Array.from(new Set(cleanedTags));
-
-  for (const tagName of uniqueTags) {
+  for (const tagName of selectedTags) {
     // Cek apakah tag sudah ada
     let { data: existingTag, error: tagFetchError } = await supabase
       .from("tags")
@@ -280,6 +280,9 @@ const handleSubmit = async (e: FormEvent) => {
     else {
       tagId = existingTag.id;
     }
+
+    console.log("🔗 Menyambungkan story", insertedStory.id, "dengan tag", tagId);
+
 
     // Tambahkan relasi ke story_tags
     const { error: linkError } = await supabase
@@ -336,19 +339,25 @@ const handleSubmit = async (e: FormEvent) => {
         />
         <input
           type="text"
-          placeholder="Tambah tag..."
-          value={tagInput}
+          value={currentTag}
           onChange={(e) => {
             const value = e.target.value;
-            setTagInput(value);
-            if (value.length > 1) {
-              fetchTagSuggestions(value);
-            } else {
-              setTagSuggestions([]);
+            setCurrentTag(value);
+            fetchTagSuggestions(value); // panggil di sini
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              const newTag = currentTag.trim();
+              if (newTag && !selectedTags.includes(newTag)) {
+                setSelectedTags([...selectedTags, newTag]);
+              }
+              setCurrentTag("");
             }
           }}
-          style={{ width: "100%", padding: "0.5rem", marginBottom: "0.25rem" }}
+          placeholder="Tambahkan tag dan tekan Enter"
         />
+
         {tagSuggestions.length > 0 && (
           <div style={{ marginBottom: "0.5rem" }}>
             {tagSuggestions.map((suggestion) => (
@@ -359,7 +368,7 @@ const handleSubmit = async (e: FormEvent) => {
                   if (!selectedTags.includes(suggestion)) {
                     setSelectedTags([...selectedTags, suggestion]);
                   }
-                  setTagInput("");
+                  setCurrentTag("");
                   setTagSuggestions([]);
                 }}
                 style={{
@@ -373,6 +382,11 @@ const handleSubmit = async (e: FormEvent) => {
               >
                 #{suggestion}
               </button>
+            ))}
+            {selectedTags.map((tag, idx) => (
+              <span key={idx} className="inline-block bg-blue-100 px-2 py-1 rounded mr-2">
+                {tag}
+              </span>
             ))}
           </div>
         )}
