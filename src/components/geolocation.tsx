@@ -220,87 +220,50 @@ const handleSubmit = async (e: FormEvent) => {
     imageUrl = await uploadImage(image);
   }
 
-  const { data: insertedStory, error } = await supabase.from("stories").insert({
-    latitude,
-    longitude,
-    content,
-    user_id: userId,
-    email,
-    location_name: locationName,
-    image_url: imageUrl,
-  }).select().single();
-
-  if (!error && insertedStory) {
-    setContent("");
-    setImage(null);
-    setLocationName("");
-    fetchStories();
-    console.log("Mengirim koordinat:", position.lat, position.lng, "timestamp:", position.timestamp);
-
-    // Untuk setiap tag:
-    for (const tagName of selectedTags) {
-      // Cari tag, kalau belum ada — buat
-      let { data: tag } = await supabase
-        .from("tags")
-        .select("id")
-        .eq("name", tagName)
-        .maybeSingle();
-
-      if (!tag) {
-        const res = await supabase
-          .from("tags")
-          .insert({ name: tagName })
-          .select()
-          .single();
-        tag = res.data;
-      }
-
-      // Hubungkan ke story
-      if (tag) {
-        await supabase.from("story_tags").insert({
-          story_id: insertedStory.id,
-          tag_id: tag.id,
-        });
-      }
-    }
-
-    // Setelah berhasil menambahkan cerita:
-const { data: newStory, error: insertError } = await supabase
-  .from("stories")
-  .insert([
-    {
+  const { data: insertedStory, error: insertError } = await supabase
+    .from("stories")
+    .insert({
+      latitude,
+      longitude,
       content,
-      latitude: position?.lat,
-      longitude: position?.lng,
       user_id: userId,
+      email,
+      location_name: locationName,
       image_url: imageUrl,
-    },
-  ])
-  .select()
-  .single();
+    })
+    .select()
+    .single();
 
-if (insertError) {
-  console.error("Error inserting story:", insertError);
-  return;
-}
+  if (insertError || !insertedStory) {
+    console.error("Gagal menyimpan cerita:", insertError?.message);
+    alert("Terjadi kesalahan saat menyimpan cerita.");
+    return;
+  }
 
-if (newStory) {
+  // ✅ Bersihkan dan unikkan tag
   const cleanedTags = selectedTags
     .map((t) => t.trim().toLowerCase())
-    .filter(Boolean); // remove empty strings
+    .filter(Boolean);
 
   const uniqueTags = Array.from(new Set(cleanedTags));
 
   for (const tagName of uniqueTags) {
-    // 1. Cek apakah tag sudah ada
+    // Cek apakah tag sudah ada
     let { data: existingTag, error: tagFetchError } = await supabase
       .from("tags")
-      .select("*")
+      .select("id")
       .eq("name", tagName)
-      .single();
+      .maybeSingle(); // ✅ pakai maybeSingle untuk antisipasi tidak ditemukan
 
-    if (tagFetchError || !existingTag) {
-      // 2. Insert tag baru jika belum ada
+      if (tagFetchError) {
+        console.error("Gagal mengambil tag:", tagFetchError.message);
+        continue; // lanjut ke tag berikutnya
+      }
+
+      let tagId: number | null = null;
+
+    if (!existingTag) {
+      // Insert tag baru jika belum ada
       const { data: newTag, error: tagInsertError } = await supabase
         .from("tags")
         .insert([{ name: tagName }])
@@ -308,38 +271,38 @@ if (newStory) {
         .single();
 
       if (tagInsertError) {
-        console.error("Error inserting tag:", tagInsertError);
+        console.error("Gagal menambahkan tag:", tagInsertError.message);
         continue;
       }
-      existingTag = newTag;
+
+      tagId = newTag.id;
+    }
+    else {
+      tagId = existingTag.id;
     }
 
-    // 3. Tambahkan relasi ke story_tags
-    const { error: storyTagInsertError } = await supabase
+    // Tambahkan relasi ke story_tags
+    const { error: linkError } = await supabase
       .from("story_tags")
-      .insert([{ story_id: newStory.id, tag_id: existingTag.id }]);
+      .insert([{ story_id: insertedStory.id, tag_id: tagId }]);
 
-    if (storyTagInsertError) {
-      console.error("Error linking tag to story:", storyTagInsertError);
+    if (linkError) {
+      console.error("Gagal membuat relasi tag ke cerita:", linkError.message);
     }
   }
 
-  // Reset form
+  // ✅ Reset form
   setContent("");
   setSelectedTags([]);
   setImage(null);
   setImagePreview(null);
+  setLocationName("");
 
-  // Refresh stories
+  // Refresh cerita
   fetchStories();
-}
+}; 
 
 
-
-  } else {
-    console.error("Insert error:", error?.message);
-  }
-};
 
 
   return (
