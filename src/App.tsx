@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 import { Auth } from "./components/auth";
-import Geolocation from './components/geolocation';
+import Geolocation from "./pages/geolocation";
 import { supabase } from "./supabase-client";
 import { SessionContext } from "./context/sessionContext";
 import LocalVerificationButton from "./components/localVerification";

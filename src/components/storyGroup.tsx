@@ -1,4 +1,4 @@
-// components/StoryMarkerGroup.tsx
+// components/StoryGroup.tsx
 import { useState } from "react";
 import { Marker, Popup } from "react-leaflet";
 import L from "leaflet";
