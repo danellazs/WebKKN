@@ -13,19 +13,6 @@ interface Props {
   };
 }
 
-export function groupStoriesByLocation(stories: Story[]) {
-  const grouped: { [key: string]: Story[] } = {};
-
-  stories.forEach((story) => {
-    const key = `${story.latitude.toFixed(4)},${story.longitude.toFixed(4)}`;
-    if (!grouped[key]) {
-      grouped[key] = [];
-    }
-    grouped[key].push(story);
-  });
-
-  return Object.values(grouped);
-}
 
 const StoryMarkerGroup = ({ stories, onSelectStory, isHotspot = false, position }: Props) => {
   const [currentIndex, setCurrentIndex] = useState(0);

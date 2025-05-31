@@ -1,7 +1,7 @@
 import { useContext, useState, useEffect } from "react";
 import { SessionContext } from "../context/sessionContext";
 import { supabase } from "../supabase-client";
-import { MapContainer, TileLayer} from "react-leaflet";
+import { MapContainer, TileLayer } from "react-leaflet";
 
 import StoryForm from "../components/storyForm";
 import StoryMap from "../components/mapping";
@@ -11,6 +11,8 @@ import type { Story } from "../types/story";
 
 const MAPTILER_KEY = 'GB6tFeFIv9m9TNPuiCXF';
 const fixedCenter = { lat: -7.75, lng: 110.38 }; // Sleman approx
+
+import { clusterNearbyStories } from "../utils/geolocation"; // or your actual path
 
 const Geolocation = () => {
   const session = useContext(SessionContext);
@@ -24,8 +26,16 @@ const Geolocation = () => {
     timestamp: Date.now(),
   });
 
+  // ✅ Declare stories first before using it in any useEffect
   const [stories, setStories] = useState<Story[]>([]);
+  const [clusteredStories, setClusteredStories] = useState<Story[][]>([]);
   const [selectedStory, setSelectedStory] = useState<Story | null>(null);
+
+  // ✅ Moved useEffect here after stories is declared
+  useEffect(() => {
+    const clusters = clusterNearbyStories(stories, 50); // adjust radius if needed
+    setClusteredStories(clusters);
+  }, [stories]);
 
   const refreshLocation = () => {
     navigator.geolocation.getCurrentPosition(
@@ -126,12 +136,11 @@ const Geolocation = () => {
           attribution="&copy; OpenStreetMap & MapTiler"
         />
 
+        {/* ✅ Ensure prop name matches what StoryMap expects */}
         <StoryMap
-          stories={stories}
+          stories={clusteredStories} // change to "stories" if that’s what your prop is called
           onSelectStory={setSelectedStory}
         />
-
-
       </MapContainer>
 
       {selectedStory && (

@@ -1,15 +1,14 @@
-import StoryMarkerGroup, { groupStoriesByLocation } from "./storyGroup";
+import StoryMarkerGroup from "./storyGroup";
 import type { Story } from "../types/story";
 import PulsingCircle from "./pulsingCircle";
 
-
 interface StoryMapProps {
-  stories: Story[];
+  stories: Story[][]; 
   onSelectStory: (story: Story) => void;
 }
 
 const StoryMap = ({ stories, onSelectStory }: StoryMapProps) => {
-  const groupedStories = groupStoriesByLocation(stories);
+  const groupedStories = stories; 
 
   return (
     <>
