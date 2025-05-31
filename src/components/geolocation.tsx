@@ -1,497 +1,181 @@
-import { useEffect, useState, useContext } from "react";
-import { SessionContext } from "../context/sessionContext";
-import type { FormEvent } from "react";
-import type { ChangeEvent } from "react";
+import { useState, useContext, useEffect, useRef } from "react";
 import { supabase } from "../supabase-client";
-import ConversationPanel from "./conversationPanel";
-import StoryMarkerGroup from "./storyGroup";
-import { MapContainer, TileLayer } from "react-leaflet";
-import type { Story } from "../types/story"; // sudah disatukan definisinya
+import { SessionContext } from "../context/sessionContext";
 
-const fixedCenter = { lat: -7.75, lng: 110.38 }; // Sleman approx coords
-
-const MAPTILER_KEY = 'GB6tFeFIv9m9TNPuiCXF';
-
-
-
-function haversineDistance(a: { lat: number, lng: number }, b: { lat: number, lng: number }) {
-  const R = 6371e3;
-  const φ1 = a.lat * Math.PI / 180;
-  const φ2 = b.lat * Math.PI / 180;
-  const Δφ = (b.lat - a.lat) * Math.PI / 180;
-  const Δλ = (b.lng - a.lng) * Math.PI / 180;
-  const x = Δλ * Math.cos((φ1 + φ2) / 2);
-  const d = Math.sqrt(Δφ * Δφ + x * x) * R;
-  return d;
-}
-
-function clusterNearbyStories(stories: Story[], radius = 20): Story[][] {
-  const clusters: Story[][] = [];
-
-  for (const story of stories) {
-    let added = false;
-    for (const cluster of clusters) {
-      const dist = haversineDistance(
-        { lat: story.latitude, lng: story.longitude },
-        { lat: cluster[0].latitude, lng: cluster[0].longitude }
-      );
-      if (dist <= radius) {
-        cluster.push(story);
-        added = true;
-        break;
-      }
-    }
-    if (!added) {
-      clusters.push([story]);
-    }
-  }
-  return clusters;
-}
-
-
-const Geolocation = () => {
-
+const Gacha = ({ points, refreshPoints }: { points: number; refreshPoints: () => void }) => {
   const session = useContext(SessionContext);
-    if (!session) return <p>Silakan login terlebih dahulu untuk menambahkan cerita.</p>;
+  const [pets, setPets] = useState<{ id: string; name: string; gif: string }[]>([]); // 🟢 dynamic pets
+  const [result, setResult] = useState<{ name: string; gif: string } | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [userPets, setUserPets] = useState<{ id: string; gif: string; name: string }[]>([]);
 
+  const GACHA_COST = 20;
 
-  const [position, setPosition] = useState<{
-    lat: number;
-    lng: number;
-    timestamp: number; // milliseconds since epoch
-  }>({
-  lat: -7.76162,
-  lng: 110.37717,
-  timestamp: Date.now(), // anggap selalu fresh
-});
+  const fetchPetsFromStorage = async () => {
+    const { data, error } = await supabase.storage.from("pet-images").list("", {
+      limit: 100,
+    });
 
-  const [content, setContent] = useState("");
-  const [image, setImage] = useState<File | null>(null);
-  const [stories, setStories] = useState<Story[]>([]);
-  const [locationName, setLocationName] = useState("");
-  const [selectedStory, setSelectedStory] = useState<Story | null>(null);
+    if (error) {
+      console.error("Error fetching pet images:", error.message);
+      return;
+    }
 
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const [tagSuggestions, setTagSuggestions] = useState<string[]>([]);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [currentTag, setCurrentTag] = useState<string>("");
+    const petList = data
+      .filter((file) => file.name.endsWith(".gif"))
+      .map((file, index) => ({
+        id: `pet${index + 1}`,
+        name: file.name.replace(".gif", ""),
+        gif: supabase.storage.from("pet-images").getPublicUrl(file.name).data.publicUrl,
+      }));
 
-
-
-  const fetchTagSuggestions = async (query: string) => {
-    const { data } = await supabase
-      .from("tags")
-      .select("name")
-      .ilike("name", `%${query}%`);
-
-    setTagSuggestions(data?.map(tag => tag.name) || []);
+    setPets(petList);
   };
 
-  const refreshLocation = () => {
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        const { latitude, longitude, accuracy } = pos.coords;
-        if (accuracy > 100) {
-          alert("Akurasi lokasi terlalu rendah. Coba di luar ruangan.");
-          return;
-        }
-        if (latitude === 0 && longitude === 0) {
-          alert("Lokasi tidak valid (0,0). Pastikan GPS aktif."); // 🔧
-          return;
-        }
-        setPosition({
-          lat: latitude,
-          lng: longitude,
-          timestamp: Date.now(),
-        });
-      },
-      (err) => {
-        console.error("Gagal memperbarui lokasi:", err.message);
-      },
+  // Use dynamic pet list for gacha
+  const handleGacha = async () => {
+    if (!session || points < GACHA_COST) {
+      alert("Points tidak cukup untuk gacha!");
+      return;
+    }
+
+    if (pets.length === 0) {
+      alert("Belum ada pet tersedia.");
+      return;
+    }
+
+    setLoading(true);
+    const randomPet = pets[Math.floor(Math.random() * pets.length)];
+
+    const { error: insertError } = await supabase.from("points").insert([
       {
-        enableHighAccuracy: true,
-        timeout: 10000,
-      }
-    );
+        user_id: session.user.id,
+        value: -GACHA_COST,
+        source: `Gacha pet ${randomPet.name}`,
+      },
+    ]);
+    if (insertError) {
+      alert("Error saat mengurangi points: " + insertError.message);
+      setLoading(false);
+      return;
+    }
+
+    const { error: petError } = await supabase.from("user_pets").insert([
+      {
+        user_id: session.user.id,
+        pet_id: randomPet.id,
+      },
+    ]);
+    if (petError) {
+      alert("Error menyimpan pet: " + petError.message);
+      setLoading(false);
+      return;
+    }
+
+    setResult(randomPet);
+    refreshPoints();
+    fetchUserPets();
+    setLoading(false);
   };
 
+  // Fetch user's owned pets based on dynamic pets
+  const fetchUserPets = async () => {
+    if (!session) return;
 
-
-  // Fetch location
-  useEffect(() => {
-    const watchId = navigator.geolocation.watchPosition(
-      (pos) => {
-        const { latitude, longitude, accuracy } = pos.coords;
-        console.log("📡 watchPosition:", latitude, longitude, "akurasi:", accuracy);
-        if (accuracy && accuracy > 100) {
-          console.warn("Akurasi lokasi terlalu rendah:", accuracy);
-          return; // abaikan lokasi buruk
-        }
-        if (latitude === 0 && longitude === 0) {
-          console.warn("Lokasi 0,0 terdeteksi. Diabaikan."); // 🔧
-          return;
-        }
-        setPosition({
-          lat: latitude,
-          lng: longitude,
-          timestamp: Date.now(), // record when it was updated
-        });
-      },
-      (err) => {
-        console.error("Error watching location:", err.message);
-      },
-      {
-        enableHighAccuracy: true,
-        maximumAge: 0,
-        timeout: 10000,
-      }
-    );
-
-    fetchStories();
-
-    return () => {
-      navigator.geolocation.clearWatch(watchId);
-    };
-  }, []);
-
-
-
-  const fetchStories = async () => {
     const { data, error } = await supabase
-      .from("stories")
-      .select(`
-        *,
-        users(name),
-        story_tags(
-          tags(name)
-        )
-      `)
-      .order("created_at", { ascending: false });
+      .from("user_pets")
+      .select("pet_id")
+      .eq("user_id", session.user.id);
 
     if (!error && data) {
-      const storiesWithTags = data.map((story) => ({
-        ...story,
-        selectedTags: story.story_tags.map((st: any) => st.tags.name),
-      }));
-      setStories(storiesWithTags);
+      const owned = data.map((d: any) => pets.find((p) => p.id === d.pet_id)).filter(Boolean);
+      setUserPets(owned as any);
     }
-
   };
 
-  const uploadImage = async (file: File): Promise<string | null> => {
-    const filePath = `stories/${file.name}-${Date.now()}`;
-    const { error } = await supabase.storage.from("stories-images").upload(filePath, file);
-    if (error) {
-      console.error("Upload error:", error.message);
-      return null;
+  useEffect(() => {
+    fetchPetsFromStorage();
+  }, []);
+
+  useEffect(() => {
+    if (pets.length > 0 && session) {
+      fetchUserPets();
     }
-
-    const { data } = supabase.storage.from("stories-images").getPublicUrl(filePath);
-    return data?.publicUrl ?? null;
-  };
-
-    const handleRemoveImage = () => {
-      setImage(null);
-      setImagePreview(null);
-    };
-
-const handleSubmit = async (e: FormEvent) => {
-  e.preventDefault();
-
-  if (!session || !position) {
-    alert("Lokasi belum tersedia. Silakan tunggu beberapa saat.");
-    return;
-  }
-
-  const now = Date.now();
-  const locationAge = now - position.timestamp;
-  const fiveMinutes = 5 * 60 * 1000;
-
-  if (locationAge > fiveMinutes) {
-    alert("Lokasi terlalu lama. Mohon tunggu hingga lokasi diperbarui.");
-    return;
-  }
-
-  const { lat: latitude, lng: longitude } = position;
-
-  if (latitude === 0 && longitude === 0) {
-    alert("Lokasi tidak valid (0,0). Pastikan GPS aktif.");
-    return;
-  }
-
-  const email = session.user.email;
-  const userId = session.user.id;
-
-  let imageUrl: string | null = null;
-  if (image) {
-    imageUrl = await uploadImage(image);
-  }
-
-  const { data: insertedStory, error: insertError } = await supabase
-    .from("stories")
-    .insert({
-      latitude,
-      longitude,
-      content,
-      user_id: userId,
-      email,
-      location_name: locationName,
-      image_url: imageUrl,
-    })
-    .select()
-    .single();
-
-  if (insertError || !insertedStory) {
-    console.error("Gagal menyimpan cerita:", insertError?.message);
-    alert("Terjadi kesalahan saat menyimpan cerita.");
-    return;
-  }
-
-  for (const tagName of selectedTags) {
-    // Cek apakah tag sudah ada
-    let { data: existingTag, error: tagFetchError } = await supabase
-      .from("tags")
-      .select("id")
-      .eq("name", tagName)
-      .maybeSingle(); // ✅ pakai maybeSingle untuk antisipasi tidak ditemukan
-
-      if (tagFetchError) {
-        console.error("Gagal mengambil tag:", tagFetchError.message);
-        continue; // lanjut ke tag berikutnya
-      }
-
-      let tagId: number | null = null;
-
-    if (!existingTag) {
-      // Insert tag baru jika belum ada
-      const { data: newTag, error: tagInsertError } = await supabase
-        .from("tags")
-        .insert([{ name: tagName }])
-        .select()
-        .single();
-
-      if (tagInsertError) {
-        console.error("Gagal menambahkan tag:", tagInsertError.message);
-        continue;
-      }
-
-      tagId = newTag.id;
-    }
-    else {
-      tagId = existingTag.id;
-    }
-
-    console.log("🔗 Menyambungkan story", insertedStory.id, "dengan tag", tagId);
-
-
-    // Tambahkan relasi ke story_tags
-    const { error: linkError } = await supabase
-      .from("story_tags")
-      .insert([{ story_id: insertedStory.id, tag_id: tagId }]);
-
-    if (linkError) {
-      console.error("Gagal membuat relasi tag ke cerita:", linkError.message);
-    }
-  }
-
-  // ✅ Reset form
-  setContent("");
-  setSelectedTags([]);
-  setImage(null);
-  setImagePreview(null);
-  setLocationName("");
-
-  // Refresh cerita
-  fetchStories();
-}; 
-
-
-
+  }, [pets, session]);
 
   return (
     <div>
-      <h2>Tambahkan Cerita Lokasi</h2>
-      <form onSubmit={handleSubmit} style={{ marginBottom: "1rem" }}>
-        <textarea
-          placeholder="Isi ceritamu..."
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          style={{ width: "100%", padding: "0.5rem", marginBottom: "0.5rem" }}
-        />
-        <input
-          type="text"
-          placeholder="Nama lokasi (opsional)"
-          value={locationName}
-          onChange={(e) => setLocationName(e.target.value)}
-          style={{ width: "100%", padding: "0.5rem", marginBottom: "0.5rem" }}
-        />
-        <input
-          type="file"
-          accept="image/*"
-          onChange={(e: ChangeEvent<HTMLInputElement>) => {
-            if (e.target.files?.[0]) {
-              const file = e.target.files[0];
-              setImage(file);
-              const previewUrl = URL.createObjectURL(file);
-              setImagePreview(previewUrl);
-            }
-          }}
-        />
-        <input
-          type="text"
-          value={currentTag}
-          onChange={(e) => {
-            const value = e.target.value;
-            setCurrentTag(value);
-            fetchTagSuggestions(value); // panggil di sini
-          }}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              e.preventDefault();
-              const newTag = currentTag.trim();
-              if (newTag && !selectedTags.includes(newTag)) {
-                setSelectedTags([...selectedTags, newTag]);
-              }
-              setCurrentTag("");
-            }
-          }}
-          placeholder="Tambahkan tag dan tekan Enter"
-        />
+      <button onClick={handleGacha} disabled={loading || pets.length === 0}>
+        {loading ? "Sedang gacha..." : `Gacha (Harga: ${GACHA_COST} points)`}
+      </button>
 
-        {tagSuggestions.length > 0 && (
-          <div style={{ marginBottom: "0.5rem" }}>
-            {tagSuggestions.map((suggestion) => (
-              <button
-                type="button"
-                key={suggestion}
-                onClick={() => {
-                  if (!selectedTags.includes(suggestion)) {
-                    setSelectedTags([...selectedTags, suggestion]);
-                  }
-                  setCurrentTag("");
-                  setTagSuggestions([]);
-                }}
-                style={{
-                  margin: "0.2rem",
-                  padding: "0.3rem 0.6rem",
-                  backgroundColor: "#eee",
-                  border: "1px solid #ccc",
-                  borderRadius: "10px",
-                  cursor: "pointer",
-                }}
-              >
-                #{suggestion}
-              </button>
-            ))}
-            {selectedTags.map((tag, idx) => (
-              <span key={idx} className="inline-block bg-blue-100 px-2 py-1 rounded mr-2">
-                {tag}
-              </span>
-            ))}
-          </div>
-        )}
-        {/* Tag yang sudah dipilih */}
-        <div style={{ marginBottom: "0.5rem" }}>
-          {selectedTags.map((tag) => (
-            <span
-              key={tag}
-              style={{
-                display: "inline-block",
-                marginRight: "0.5rem",
-                marginBottom: "0.3rem",
-                backgroundColor: "#d1ecf1",
-                padding: "0.3rem 0.6rem",
-                borderRadius: "10px",
-              }}
-            >
-              #{tag}
-              <button
-                type="button"
-                onClick={() =>
-                  setSelectedTags(selectedTags.filter((t) => t !== tag))
-                }
-                style={{
-                  marginLeft: "0.3rem",
-                  background: "none",
-                  border: "none",
-                  cursor: "pointer",
-                }}
-              >
-                ×
-              </button>
-            </span>
+      {result && (
+        <div style={{ marginTop: 20 }}>
+          <h3>Kamu mendapatkan: {result.name}</h3>
+          <img src={result.gif} alt={result.name} width={150} height={150} />
+        </div>
+      )}
+
+      <div style={{ marginTop: 30 }}>
+        <h3>Kolam?</h3>
+        <div
+          style={{
+            position: "relative",
+            width: "500px",
+            height: "300px",
+            border: "2px solid #999",
+            overflow: "hidden",
+            background: "#f9f9f9",
+          }}
+        >
+          {userPets.map((pet, idx) => (
+            <MovingPet key={idx} gif={pet.gif} />
           ))}
         </div>
-
-        {imagePreview && (
-        <div style={{ marginBottom: "0.5rem" }}>
-          <img
-            src={imagePreview}
-            alt="Preview"
-            style={{ maxWidth: "100%", height: "auto", borderRadius: "8px" }}
-          />
-          <button
-            type="button"
-            onClick={handleRemoveImage}
-            style={{
-              display: "block",
-              marginTop: "0.5rem",
-              padding: "0.3rem 0.7rem",
-              backgroundColor: "#f8d7da",
-              border: "none",
-              borderRadius: "6px",
-              cursor: "pointer",
-            }}
-          >
-            Hapus Gambar
-          </button>
-        </div>
-      )}
-
-        <button type="submit" style={{ padding: "0.5rem 1rem" }}>Kirim Cerita</button>
-        <button onClick={refreshLocation}>Perbarui Lokasi</button>
-
-      </form>
-
-      {position && (
-        <p>📍 Posisi saat ini: {position.lat.toFixed(5)}, {position.lng.toFixed(5)}</p>
-      )}
-
-      {position && (
-        
-      <MapContainer center={fixedCenter} zoom={13} scrollWheelZoom={false} style={{ height: "500px", width: "100%" }}>
-        <TileLayer
-          url={`https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=${MAPTILER_KEY}`}
-          attribution='&copy; OpenStreetMap & MapTiler'
-        />
-        {clusterNearbyStories(stories).map((storyGroup, index) => (
-          <StoryMarkerGroup
-            key={index}
-            stories={storyGroup}
-            onSelectStory={(story) => setSelectedStory(story)}
-            isHotspot={storyGroup.length >= 5} // Threshold hotspot
-          />
-        ))}
-
-        
-
-      </MapContainer>
-    )}
-
-    {selectedStory && (
-      <ConversationPanel
-        story={selectedStory}
-        onClose={() => setSelectedStory(null)}
-        onDelete={() => {
-          setSelectedStory(null);
-          fetchStories(); // reload peta
-  }}
-      />
-    )}
-
-
+      </div>
     </div>
   );
 };
 
-export default Geolocation;
+// Moving the acquired pet around the pond
+const MovingPet = ({ gif }: { gif: string }) => {
+  const [pos, setPos] = useState({ x: Math.random() * 400, y: Math.random() * 200 });
+  const directionRef = useRef({ dx: Math.random() * 2 - 1, dy: Math.random() * 2 - 1 });
+
+  useEffect(() => {
+    const move = () => {
+      setPos((prev) => {
+        let { x, y } = prev;
+        let { dx, dy } = directionRef.current;
+
+        x += dx * 2;
+        y += dy * 2;
+
+        if (x < 0 || x > 450) directionRef.current.dx *= -1;
+        if (y < 0 || y > 250) directionRef.current.dy *= -1;
+
+        return { x: Math.max(0, Math.min(x, 450)), y: Math.max(0, Math.min(y, 250)) };
+      });
+    };
+
+    const interval = setInterval(move, 30);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <img
+      src={gif}
+      alt="pet"
+      style={{
+        position: "absolute",
+        left: pos.x,
+        top: pos.y,
+        width: 50,
+        height: 50,
+        transition: "transform 0.2s",
+      }}
+    />
+  );
+};
+
+export default Gacha;
