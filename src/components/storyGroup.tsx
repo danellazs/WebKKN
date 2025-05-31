@@ -1,16 +1,17 @@
-// components/StoryGroup.tsx
 import { useState } from "react";
 import { Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 import type { Story } from "../types/story";
 
-
 interface Props {
   stories: Story[];
   onSelectStory: (story: Story) => void;
-  isHotspot?: boolean; // ← baru ditambahkan
+  isHotspot?: boolean;
+  position: {
+    lat: number;
+    lng: number;
+  };
 }
-
 
 export function groupStoriesByLocation(stories: Story[]) {
   const grouped: { [key: string]: Story[] } = {};
@@ -26,16 +27,12 @@ export function groupStoriesByLocation(stories: Story[]) {
   return Object.values(grouped);
 }
 
-const StoryMarkerGroup = ({ stories, onSelectStory, isHotspot = false  }: Props) => {
+const StoryMarkerGroup = ({ stories, onSelectStory, isHotspot = false, position }: Props) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const currentStory = stories[currentIndex];
-  const position = {
-    lat: Number(currentStory.latitude),
-    lng: Number(currentStory.longitude),
-  };
 
-    const customIcon = L.divIcon({
-    className: "", // remove default marker styling
+  const customIcon = L.divIcon({
+    className: "",
     html: `
       <div style="position: relative; width: 40px; height: 40px;">
         ${
@@ -48,15 +45,14 @@ const StoryMarkerGroup = ({ stories, onSelectStory, isHotspot = false  }: Props)
     `,
     iconSize: [40, 40],
   });
-  
+
   return (
     <Marker
-      position={position}
+      position={[position.lat, position.lng]}
       icon={customIcon}
       eventHandlers={{
         click: () => onSelectStory(stories[0]),
       }}
-    
     >
       <Popup>
         <strong>{currentStory.location_name ?? "Tanpa Nama Lokasi"}</strong><br />
@@ -109,5 +105,3 @@ const StoryMarkerGroup = ({ stories, onSelectStory, isHotspot = false  }: Props)
 };
 
 export default StoryMarkerGroup;
-
-

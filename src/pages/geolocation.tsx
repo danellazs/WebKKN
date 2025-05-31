@@ -1,8 +1,7 @@
 import { useContext, useState, useEffect } from "react";
 import { SessionContext } from "../context/sessionContext";
 import { supabase } from "../supabase-client";
-import { getClusteredGroups } from "../utils/geolocation"; // ✅ Ganti import di sini
-import { MapContainer, TileLayer, Circle } from "react-leaflet";
+import { MapContainer, TileLayer} from "react-leaflet";
 
 import StoryForm from "../components/storyForm";
 import StoryMap from "../components/mapping";
@@ -27,8 +26,6 @@ const Geolocation = () => {
 
   const [stories, setStories] = useState<Story[]>([]);
   const [selectedStory, setSelectedStory] = useState<Story | null>(null);
-
-  const clusters = getClusteredGroups(stories, 100); // ✅ gunakan fungsi sesuai utilitas
 
   const refreshLocation = () => {
     navigator.geolocation.getCurrentPosition(
@@ -134,14 +131,7 @@ const Geolocation = () => {
           onSelectStory={setSelectedStory}
         />
 
-        {clusters.map((cluster, idx) => (
-          <Circle
-            key={idx}
-            center={{ lat: cluster.lat, lng: cluster.lng }} // ✅ sesuaikan
-            radius={100} // ✅ radius tetap
-            pathOptions={{ color: 'blue', fillOpacity: 0.3 }}
-          />
-        ))}
+
       </MapContainer>
 
       {selectedStory && (

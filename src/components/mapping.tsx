@@ -1,6 +1,7 @@
-import { Circle } from "react-leaflet";
 import StoryMarkerGroup, { groupStoriesByLocation } from "./storyGroup";
 import type { Story } from "../types/story";
+import PulsingCircle from "./pulsingCircle";
+
 
 interface StoryMapProps {
   stories: Story[];
@@ -18,22 +19,12 @@ const StoryMap = ({ stories, onSelectStory }: StoryMapProps) => {
 
         return (
           <div key={index}>
-            {isHotspot && (
-              <Circle
-                center={[latitude, longitude]}
-                radius={30}
-                pathOptions={{
-                  color: "red",
-                  fillColor: "red",
-                  fillOpacity: 0.2,
-                }}
-              />
-            )}
-
+            {isHotspot && <PulsingCircle position={[latitude, longitude]} />}
             <StoryMarkerGroup
               stories={group}
               onSelectStory={onSelectStory}
               isHotspot={isHotspot}
+              position={{ lat: latitude, lng: longitude }}
             />
           </div>
         );

@@ -459,17 +459,22 @@ const handleSubmit = async (e: FormEvent) => {
 
       {position && (
         
-      <MapContainer center={fixedCenter} zoom={13} scrollWheelZoom={false} style={{ height: "500px", width: "100%" }}>
+      <MapContainer center={fixedCenter} zoom={18} scrollWheelZoom={false} style={{ height: "500px", width: "100%" }}>
         <TileLayer
           url={`https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=${MAPTILER_KEY}`}
           attribution='&copy; OpenStreetMap & MapTiler'
         />
-        {clusterNearbyStories(stories).map((storyGroup, index) => (
+        {clusterNearbyStories(stories, 15).map((storyGroup, index) => (
           <StoryMarkerGroup
             key={index}
             stories={storyGroup}
             onSelectStory={(story) => setSelectedStory(story)}
-            isHotspot={storyGroup.length >= 5} // Threshold hotspot
+            isHotspot={storyGroup.length >= 5} 
+            position={{
+              lat: storyGroup[0].latitude,
+              lng: storyGroup[0].longitude
+            }}
+
           />
         ))}
 

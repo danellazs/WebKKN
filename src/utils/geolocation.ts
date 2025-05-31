@@ -20,41 +20,35 @@ export type ClusteredStoryGroup = {
   stories: Story[];
 };
 
-export function getClusteredGroups(
-  stories: Story[],
-  radius = 20
-): ClusteredStoryGroup[] {
+export function getClusteredGroups(stories: Story[], radius = 20): ClusteredStoryGroup[] {
   const rawClusters = clusterNearbyStories(stories, radius);
 
   return rawClusters.map((group) => {
-    const lat = group[0].latitude;
-    const lng = group[0].longitude;
+    const lat = group.reduce((sum, s) => sum + s.latitude, 0) / group.length;
+    const lng = group.reduce((sum, s) => sum + s.longitude, 0) / group.length;
     return { lat, lng, stories: group };
   });
 }
 
-export function clusterNearbyStories(
-  stories: Story[],
-  radius: number
-): Story[][] {
+export function clusterNearbyStories(stories: Story[], radius: number): Story[][] {
   const clusters: Story[][] = [];
-  const visited: boolean[] = new Array(stories.length).fill(false);
+  const visited = new Array(stories.length).fill(false);
 
   for (let i = 0; i < stories.length; i++) {
     if (visited[i]) continue;
 
-    const cluster: Story[] = [stories[i]];
+    const cluster = [stories[i]];
     visited[i] = true;
 
     for (let j = i + 1; j < stories.length; j++) {
       if (visited[j]) continue;
 
-      const distance = haversineDistance(
+      const dist = haversineDistance(
         { lat: stories[i].latitude, lng: stories[i].longitude },
         { lat: stories[j].latitude, lng: stories[j].longitude }
       );
 
-      if (distance <= radius) {
+      if (dist <= radius) {
         cluster.push(stories[j]);
         visited[j] = true;
       }
