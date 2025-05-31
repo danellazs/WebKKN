@@ -2,50 +2,35 @@ import { useState, useContext, useEffect, useRef } from "react";
 import { supabase } from "../supabase-client";
 import { SessionContext } from "../context/sessionContext";
 
+const BASE_PET_URL = "https://ufcbttlleeeycgqgaqgm.supabase.co/storage/v1/object/public/pet-images/";
+
+const PETS = [
+  { id: "pet1", name: "Fluffy", gif: `${BASE_PET_URL}penyucoklat.gif` },
+  { id: "pet2", name: "Spark", gif: `${BASE_PET_URL}penyubiru.gif` },
+  { id: "pet3", name: "Bubbles", gif: `${BASE_PET_URL}penyumerah.gif` },
+  { id: "pet4", name: "Spark", gif: `${BASE_PET_URL}penyualbino.gif` },
+  { id: "pet5", name: "Shadow", gif: `${BASE_PET_URL}penyuungu.gif` },
+  { id: "pet6", name: "Sunny", gif: `${BASE_PET_URL}penyucentil.gif` },
+  { id: "pet7", name: "Coco", gif: `${BASE_PET_URL}kurakura.gif` },
+  { id: "pet8", name: "Luna", gif: `${BASE_PET_URL}penyugem.gif` },
+];
+
 const Gacha = ({ points, refreshPoints }: { points: number; refreshPoints: () => void }) => {
   const session = useContext(SessionContext);
-  const [pets, setPets] = useState<{ id: string; name: string; gif: string }[]>([]); // 🟢 dynamic pets
   const [result, setResult] = useState<{ name: string; gif: string } | null>(null);
   const [loading, setLoading] = useState(false);
   const [userPets, setUserPets] = useState<{ id: string; gif: string; name: string }[]>([]);
 
   const GACHA_COST = 20;
 
-  const fetchPetsFromStorage = async () => {
-    const { data, error } = await supabase.storage.from("pet-images").list("", {
-      limit: 100,
-    });
-
-    if (error) {
-      console.error("Error fetching pet images:", error.message);
-      return;
-    }
-
-    const petList = data
-      .filter((file) => file.name.endsWith(".gif"))
-      .map((file, index) => ({
-        id: `pet${index + 1}`,
-        name: file.name.replace(".gif", ""),
-        gif: supabase.storage.from("pet-images").getPublicUrl(file.name).data.publicUrl,
-      }));
-
-    setPets(petList);
-  };
-
-  // Use dynamic pet list for gacha
   const handleGacha = async () => {
     if (!session || points < GACHA_COST) {
       alert("Points tidak cukup untuk gacha!");
       return;
     }
 
-    if (pets.length === 0) {
-      alert("Belum ada pet tersedia.");
-      return;
-    }
-
     setLoading(true);
-    const randomPet = pets[Math.floor(Math.random() * pets.length)];
+    const randomPet = PETS[Math.floor(Math.random() * PETS.length)];
 
     const { error: insertError } = await supabase.from("points").insert([
       {
@@ -78,7 +63,6 @@ const Gacha = ({ points, refreshPoints }: { points: number; refreshPoints: () =>
     setLoading(false);
   };
 
-  // Fetch user's owned pets based on dynamic pets
   const fetchUserPets = async () => {
     if (!session) return;
 
@@ -88,24 +72,18 @@ const Gacha = ({ points, refreshPoints }: { points: number; refreshPoints: () =>
       .eq("user_id", session.user.id);
 
     if (!error && data) {
-      const owned = data.map((d: any) => pets.find((p) => p.id === d.pet_id)).filter(Boolean);
+      const owned = data.map((d: any) => PETS.find((p) => p.id === d.pet_id)).filter(Boolean);
       setUserPets(owned as any);
     }
   };
 
   useEffect(() => {
-    fetchPetsFromStorage();
-  }, []);
-
-  useEffect(() => {
-    if (pets.length > 0 && session) {
-      fetchUserPets();
-    }
-  }, [pets, session]);
+    fetchUserPets();
+  }, [session]);
 
   return (
     <div>
-      <button onClick={handleGacha} disabled={loading || pets.length === 0}>
+      <button onClick={handleGacha} disabled={loading}>
         {loading ? "Sedang gacha..." : `Gacha (Harga: ${GACHA_COST} points)`}
       </button>
 
@@ -117,7 +95,7 @@ const Gacha = ({ points, refreshPoints }: { points: number; refreshPoints: () =>
       )}
 
       <div style={{ marginTop: 30 }}>
-        <h3>Kolam?</h3>
+        <h3>Kolam wkwk</h3>
         <div
           style={{
             position: "relative",
