@@ -1,4 +1,4 @@
-import { useEffect, useState, type ChangeEvent, type KeyboardEvent } from "react";
+import { useEffect, useState, type ChangeEvent, type KeyboardEvent, type FocusEvent } from "react";
 import { supabase } from "../supabase-client";
 
 type TagInputProps = {
@@ -9,6 +9,7 @@ type TagInputProps = {
 const TagInput = ({ selectedTags, setSelectedTags }: TagInputProps) => {
   const [availableTags, setAvailableTags] = useState<string[]>([]);
   const [input, setInput] = useState("");
+  const [isFocused, setIsFocused] = useState(false); // 👈 untuk deteksi fokus input
 
   useEffect(() => {
     const fetchTags = async () => {
@@ -43,10 +44,19 @@ const TagInput = ({ selectedTags, setSelectedTags }: TagInputProps) => {
     setSelectedTags(selectedTags.filter((t) => t !== tag));
   };
 
-  const filteredSuggestions = availableTags.filter(
-    (tag) =>
-      tag.toLowerCase().includes(input.toLowerCase()) && !selectedTags.includes(tag)
-  );
+  const handleFocus = () => setIsFocused(true);
+  const handleBlur = (_e: FocusEvent<HTMLInputElement>) => {
+    // Tunggu sedikit agar klik suggestion bisa terdeteksi
+    setTimeout(() => setIsFocused(false), 100);
+  };
+
+  const filteredSuggestions = availableTags
+    .filter(
+      (tag) =>
+        tag.toLowerCase().includes(input.toLowerCase()) &&
+        !selectedTags.includes(tag)
+    )
+    .slice(0, 3); // 👈 batasi ke 3 saran teratas
 
   return (
     <div style={{ marginBottom: "0.5rem" }}>
@@ -70,13 +80,15 @@ const TagInput = ({ selectedTags, setSelectedTags }: TagInputProps) => {
       </div>
       <input
         type="text"
-        placeholder="Tambahkan tag"
+        placeholder="Tambahkan tag dan tekan Enter"
         value={input}
         onChange={handleInputChange}
         onKeyDown={handleKeyDown}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
         style={{ width: "100%", padding: "0.5rem" }}
       />
-      {filteredSuggestions.length > 0 && (
+      {isFocused && filteredSuggestions.length > 0 && (
         <ul style={{ listStyle: "none", padding: 0, marginTop: "0.25rem" }}>
           {filteredSuggestions.map((tag) => (
             <li
