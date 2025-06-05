@@ -1,15 +1,11 @@
 import { useState } from "react";
 import MovingPet from "./movingPet";
 import "../App.css";
-
-type Pet = {
-  id: string;
-  gif_url: string;
-  name: string;
-};
+import type { Pet } from "../types/pet";
 
 const PetPool = ({ userPets }: { userPets: Pet[] }) => {
   const [showPopup, setShowPopup] = useState(false);
+  const [selectedPet, setSelectedPet] = useState<Pet | null>(null);
 
   if (userPets.length === 0) return null;
 
@@ -44,8 +40,18 @@ const PetPool = ({ userPets }: { userPets: Pet[] }) => {
             <h2>Daftar Pet yang Kamu Miliki</h2>
             <ul className="pet-list">
               {uniquePets.map((pet) => (
-                <li key={pet.id} className="pet-list-item">
-                  <img src={pet.gif_url} alt={pet.name} className="pet-list-img" />
+                <li
+                  key={pet.id}
+                  className="pet-list-item"
+                  onClick={() => setSelectedPet(pet)}
+                  style={{ cursor: "pointer" }}
+                  title="Klik untuk melihat deskripsi"
+                >
+                  <img
+                    src={pet.gif_url}
+                    alt={pet.name}
+                    className="pet-list-img"
+                  />
                   {pet.name}
                 </li>
               ))}
@@ -53,6 +59,32 @@ const PetPool = ({ userPets }: { userPets: Pet[] }) => {
             <button
               className="pet-btn-close"
               onClick={() => setShowPopup(false)}
+            >
+              Tutup
+            </button>
+          </div>
+        </div>
+      )}
+
+      {selectedPet && (
+        <div
+          className="pet-popup-overlay"
+          onClick={() => setSelectedPet(null)}
+        >
+          <div
+            className="pet-popup-content"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3>{selectedPet.name}</h3>
+            <img
+              src={selectedPet.gif_url}
+              alt={selectedPet.name}
+              className="pet-list-img"
+            />
+            <p>{selectedPet.description}</p>
+            <button
+              className="pet-btn-close"
+              onClick={() => setSelectedPet(null)}
             >
               Tutup
             </button>
