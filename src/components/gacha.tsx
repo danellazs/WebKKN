@@ -1,10 +1,14 @@
-import { useState, useContext, useEffect, useRef } from "react";
+//C:\Users\user\Desktop\github\kkn\kknpaloh\src\components\gacha.tsx
+
+import { useState, useContext, useEffect} from "react";
 import { supabase } from "../supabase-client";
 import { SessionContext } from "../context/sessionContext";
+import type { Pet } from "../types/pet";
+import PetPool from "./petPool";
 
 const BASE_PET_URL = "https://ufcbttlleeeycgqgaqgm.supabase.co/storage/v1/object/public/pet-images/";
 
-const PETS = [
+export const PETS = [
   { id: "pet1", name: "Fluffy", gif: `${BASE_PET_URL}penyucoklat.gif` },
   { id: "pet2", name: "Spark", gif: `${BASE_PET_URL}penyubiru.gif` },
   { id: "pet3", name: "Bubbles", gif: `${BASE_PET_URL}penyumerah.gif` },
@@ -17,11 +21,34 @@ const PETS = [
 
 const Gacha = ({ points, refreshPoints }: { points: number; refreshPoints: () => void }) => {
   const session = useContext(SessionContext);
-  const [result, setResult] = useState<{ name: string; gif: string } | null>(null);
+  const [result, setResult] = useState<Pet | null>(null);
   const [loading, setLoading] = useState(false);
-  const [userPets, setUserPets] = useState<{ id: string; gif: string; name: string }[]>([]);
+  
+  const [userPets, setUserPets] = useState<Pet[]>([]);
 
   const GACHA_COST = 20;
+
+  const fetchUserPets = async () => {
+    if (!session) return;
+    const { data, error } = await supabase
+      .from("user_pets")
+      .select("pet_id")
+      .eq("user_id", session.user.id);
+
+    if (error) {
+      console.error("Failed to fetch user pets:", error.message);
+      return;
+    }
+
+    // Cocokkan pet_id dari db dengan PETS
+    const ownedPets = PETS.filter((pet) => data.some((up) => up.pet_id === pet.id));
+    setUserPets(ownedPets);
+  };
+
+  useEffect(() => {
+    fetchUserPets();
+  }, [session]);
+
 
   const handleGacha = async () => {
     if (!session || points < GACHA_COST) {
@@ -59,37 +86,15 @@ const Gacha = ({ points, refreshPoints }: { points: number; refreshPoints: () =>
 
     setResult(randomPet);
     refreshPoints();
-    fetchUserPets();
     setLoading(false);
   };
-
-  const fetchUserPets = async () => {
-    if (!session) return;
-
-    const { data, error } = await supabase
-      .from("user_pets")
-      .select("pet_id")
-      .eq("user_id", session.user.id);
-
-    if (!error && data) {
-      const owned = data.map((d: any) => PETS.find((p) => p.id === d.pet_id)).filter(Boolean);
-      setUserPets(owned as any);
-    }
-  };
-
-  useEffect(() => {
-    if (!session) {
-      setUserPets([]);
-    } else {
-      fetchUserPets();
-    }
-    }, [session]);
 
   return (
     <div>
       <button onClick={handleGacha} disabled={loading}>
         {loading ? "Sedang gacha..." : `Gacha (Harga: ${GACHA_COST} points)`}
       </button>
+      <PetPool  userPets={userPets} />
 
       {result && (
         <div style={{ marginTop: 20 }}>
@@ -98,66 +103,7 @@ const Gacha = ({ points, refreshPoints }: { points: number; refreshPoints: () =>
         </div>
       )}
 
-      {session && (
-        <div style={{ marginTop: 30 }}>
-          <h3>Kolam wkwk</h3>
-          <div
-            style={{
-              position: "relative",
-              width: "500px",
-              height: "300px",
-              border: "2px solid #999",
-              overflow: "hidden",
-              background: "#f9f9f9",
-            }}
-          >
-            {userPets.map((pet, idx) => (
-              <MovingPet key={idx} gif={pet.gif} />
-            ))}
-          </div>
-        </div>
-      )}
     </div>
-  );
-};
-
-const MovingPet = ({ gif }: { gif: string }) => {
-  const [pos, setPos] = useState({ x: Math.random() * 400, y: Math.random() * 200 });
-  const directionRef = useRef({ dx: Math.random() * 2 - 1, dy: Math.random() * 2 - 1 });
-
-  useEffect(() => {
-    const move = () => {
-      setPos((prev) => {
-        let { x, y } = prev;
-        let { dx, dy } = directionRef.current;
-
-        x += dx * 2;
-        y += dy * 2;
-
-        if (x < 0 || x > 450) directionRef.current.dx *= -1;
-        if (y < 0 || y > 250) directionRef.current.dy *= -1;
-
-        return { x: Math.max(0, Math.min(x, 450)), y: Math.max(0, Math.min(y, 250)) };
-      });
-    };
-
-    const interval = setInterval(move, 30);
-    return () => clearInterval(interval);
-  }, []);
-
-  return (
-    <img
-      src={gif}
-      alt="pet"
-      style={{
-        position: "absolute",
-        left: pos.x,
-        top: pos.y,
-        width: 50,
-        height: 50,
-        transition: "transform 0.2s",
-      }}
-    />
   );
 };
 
