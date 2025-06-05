@@ -89,6 +89,18 @@ const StoryForm = ({ position, session, onSubmitted, fetchStories, refreshLocati
       }
     }
 
+    const { error: pointsError } = await supabase
+      .from("points")
+      .insert({
+        user_id: userId,
+        value: 20, 
+        source: `Menambahkan cerita di lokasi: ${locationName || "Tanpa Nama"}`
+      });
+
+    if (pointsError) {
+      console.error("Gagal menambahkan poin:", pointsError.message);
+    }
+
     setContent("");
     setLocationName("");
     setSelectedTags([]);
