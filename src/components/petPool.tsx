@@ -4,7 +4,7 @@ import "../App.css";
 
 type Pet = {
   id: string;
-  gif: string;
+  gif_url: string;
   name: string;
 };
 
@@ -23,7 +23,7 @@ const PetPool = ({ userPets }: { userPets: Pet[] }) => {
 
       <div className="pet-pool">
         {userPets.map((pet) => (
-          <MovingPet key={pet.id} gif={pet.gif} />
+          <MovingPet key={pet.id} gif={pet.gif_url} />
         ))}
 
         <button
@@ -45,7 +45,7 @@ const PetPool = ({ userPets }: { userPets: Pet[] }) => {
             <ul className="pet-list">
               {uniquePets.map((pet) => (
                 <li key={pet.id} className="pet-list-item">
-                  <img src={pet.gif} alt={pet.name} className="pet-list-img" />
+                  <img src={pet.gif_url} alt={pet.name} className="pet-list-img" />
                   {pet.name}
                 </li>
               ))}

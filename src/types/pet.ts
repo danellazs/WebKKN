@@ -2,5 +2,6 @@
 export type Pet = {
   id: string;
   name: string;
-  gif: string;
+  gif_url: string;
+  description?: string;
 };

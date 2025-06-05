@@ -1,38 +1,35 @@
-//C:\Users\user\Desktop\github\kkn\kknpaloh\src\components\gacha.tsx
+// C:\Users\user\Desktop\github\kkn\kknpaloh\src\components\gacha.tsx
 
-import { useState, useContext, useEffect} from "react";
+import { useState, useContext, useEffect } from "react";
 import { supabase } from "../supabase-client";
 import { SessionContext } from "../context/sessionContext";
 import type { Pet } from "../types/pet";
 import PetPool from "./petPool";
 
-const BASE_PET_URL = "https://ufcbttlleeeycgqgaqgm.supabase.co/storage/v1/object/public/pet-images/";
-
-export const PETS = [
-  { id: "pet1", name: "Fluffy", gif: `${BASE_PET_URL}penyucoklat.gif` },
-  { id: "pet2", name: "Spark", gif: `${BASE_PET_URL}penyubiru.gif` },
-  { id: "pet3", name: "Bubbles", gif: `${BASE_PET_URL}penyumerah.gif` },
-  { id: "pet4", name: "Spark", gif: `${BASE_PET_URL}penyualbino.gif` },
-  { id: "pet5", name: "Shadow", gif: `${BASE_PET_URL}penyuungu.gif` },
-  { id: "pet6", name: "Sunny", gif: `${BASE_PET_URL}penyucentil.gif` },
-  { id: "pet7", name: "Coco", gif: `${BASE_PET_URL}kurakura.gif` },
-  { id: "pet8", name: "Luna", gif: `${BASE_PET_URL}penyugem.gif` },
-];
-
 const Gacha = ({ points, refreshPoints }: { points: number; refreshPoints: () => void }) => {
   const session = useContext(SessionContext);
   const [result, setResult] = useState<Pet | null>(null);
   const [loading, setLoading] = useState(false);
-  
+
   const [userPets, setUserPets] = useState<Pet[]>([]);
+  const [allPets, setAllPets] = useState<Pet[]>([]);
 
   const GACHA_COST = 20;
+
+  const fetchAllPets = async () => {
+    const { data, error } = await supabase.from("pets").select("*");
+    if (error) {
+      console.error("Gagal mengambil data pets:", error.message);
+    } else {
+      setAllPets(data);
+    }
+  };
 
   const fetchUserPets = async () => {
     if (!session) return;
     const { data, error } = await supabase
       .from("user_pets")
-      .select("pet_id")
+      .select("pet:pet_id (id, name, gif_url, description)")
       .eq("user_id", session.user.id);
 
     if (error) {
@@ -40,15 +37,19 @@ const Gacha = ({ points, refreshPoints }: { points: number; refreshPoints: () =>
       return;
     }
 
-    // Cocokkan pet_id dari db dengan PETS
-    const ownedPets = PETS.filter((pet) => data.some((up) => up.pet_id === pet.id));
-    setUserPets(ownedPets);
+    const pets: Pet[] = data.map((record: any) => record.pet);
+    setUserPets(pets);
   };
 
   useEffect(() => {
-    fetchUserPets();
-  }, [session]);
+    fetchAllPets();
+  }, []);
 
+  useEffect(() => {
+    if (session) {
+      fetchUserPets();
+    }
+  }, [session]);
 
   const handleGacha = async () => {
     if (!session || points < GACHA_COST) {
@@ -57,7 +58,7 @@ const Gacha = ({ points, refreshPoints }: { points: number; refreshPoints: () =>
     }
 
     setLoading(true);
-    const randomPet = PETS[Math.floor(Math.random() * PETS.length)];
+    const randomPet = allPets[Math.floor(Math.random() * allPets.length)];
 
     const { error: insertError } = await supabase.from("points").insert([
       {
@@ -86,6 +87,7 @@ const Gacha = ({ points, refreshPoints }: { points: number; refreshPoints: () =>
 
     setResult(randomPet);
     refreshPoints();
+    fetchUserPets(); // Update daftar pet setelah gacha
     setLoading(false);
   };
 
@@ -94,15 +96,15 @@ const Gacha = ({ points, refreshPoints }: { points: number; refreshPoints: () =>
       <button onClick={handleGacha} disabled={loading}>
         {loading ? "Sedang gacha..." : `Gacha (Harga: ${GACHA_COST} points)`}
       </button>
-      <PetPool  userPets={userPets} />
+
+      <PetPool userPets={userPets} />
 
       {result && (
         <div style={{ marginTop: 20 }}>
           <h3>Kamu mendapatkan: {result.name}</h3>
-          <img src={result.gif} alt={result.name} width={150} height={150} />
+          <img src={result.gif_url} alt={result.name} width={150} height={150} />
         </div>
       )}
-
     </div>
   );
 };
