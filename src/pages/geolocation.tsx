@@ -106,8 +106,6 @@ const Geolocation = () => {
     };
   }, []);
 
-  if (!session) return <p>Silakan login terlebih dahulu untuk menambahkan cerita.</p>;
-
   return (
     <div>
       <h2>Tambahkan Cerita Lokasi</h2>

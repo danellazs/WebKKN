@@ -66,3 +66,39 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+/* Modal overlay */
+.auth-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Modal content */
+.auth-modal-content {
+  background-color: white;
+  padding: 1rem;
+  border-radius: 8px;
+  max-width: 400px;
+  width: 90%;
+}
+
+/* Close button */
+.auth-modal-close-button {
+  float: right;
+  margin-bottom: 1rem;
+  cursor: pointer;
+}
+
+/* Wrapper padding */
+.app-wrapper {
+  padding: 1rem;
+}
+

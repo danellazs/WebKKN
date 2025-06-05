@@ -80,7 +80,9 @@ const QuizGame = () => {
   };
 
   const handleSubmit = async () => {
-    if (!session) return;
+    if (!session){alert("Tolong login terlebih dahulu sebelum mengirim jawaban.");
+    return;
+  }
 
     let correct = 0;
 

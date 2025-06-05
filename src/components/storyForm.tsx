@@ -6,7 +6,7 @@ import type { Session } from "@supabase/supabase-js";
 
 type StoryFormProps = {
   position: { lat: number; lng: number; timestamp: number };
-  session: Session;
+  session: Session | null;
   onSubmitted: () => void;
   fetchStories: () => Promise<void>;
   refreshLocation: () => void;   
@@ -34,6 +34,12 @@ const StoryForm = ({ position, session, onSubmitted, fetchStories, refreshLocati
     e.preventDefault();
     const now = Date.now();
     const locationAge = now - position.timestamp;
+
+    if (!session) {
+    alert("Tolong login terlebih dahulu sebelum add pin");
+    return;
+  }
+
     if (locationAge > 5 * 60 * 1000) {
       alert("Lokasi terlalu lama. Mohon tunggu hingga lokasi diperbarui.");
       return;

@@ -11,6 +11,7 @@ import QuizGame from './components/quizGame';
 
 function App() {
   const [session, setSession] = useState<any>(null);
+  const [showAuth, setShowAuth] = useState(false);
 
   useEffect(() => {
     async function fetchSession() {
@@ -22,6 +23,7 @@ function App() {
     const { data: authListener } = supabase.auth.onAuthStateChange(
       (_event, session) => {
         setSession(session);
+        if (session) setShowAuth(false);
       }
     );
 
@@ -36,17 +38,37 @@ function App() {
 
   return (
     <SessionContext.Provider value={session}>
-      {session ? (
-        <>
-          <button onClick={logout}>Log Out</button>
-          {/* Remove passing session as prop */}
-          <Geolocation />
-          <LocalVerificationButton />
-          <QuizGame />
-        </>
-      ) : (
-        <Auth />
-      )}
+      <div className="app-wrapper">
+        {session ? (
+          <>
+            <button onClick={logout}>Log Out</button>
+          </>
+        ) : (
+          <>
+            <button onClick={() => setShowAuth(true)}>Login / Sign Up</button>
+          </>
+        )}
+
+        {/* Main app content always rendered */}
+        <Geolocation />
+        <LocalVerificationButton />
+        <QuizGame />
+
+        {/* Conditionally render Auth modal/form */}
+        {showAuth && (
+          <div className="auth-modal-overlay">
+            <div className="auth-modal-content">
+              <button
+                onClick={() => setShowAuth(false)}
+                className="auth-modal-close-button"
+              >
+                Close
+              </button>
+              <Auth />
+            </div>
+          </div>
+        )}
+      </div>
     </SessionContext.Provider>
   );
 }

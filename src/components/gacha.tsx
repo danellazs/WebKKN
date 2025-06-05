@@ -78,8 +78,12 @@ const Gacha = ({ points, refreshPoints }: { points: number; refreshPoints: () =>
   };
 
   useEffect(() => {
-    fetchUserPets();
-  }, [session]);
+    if (!session) {
+      setUserPets([]);
+    } else {
+      fetchUserPets();
+    }
+    }, [session]);
 
   return (
     <div>
@@ -94,23 +98,25 @@ const Gacha = ({ points, refreshPoints }: { points: number; refreshPoints: () =>
         </div>
       )}
 
-      <div style={{ marginTop: 30 }}>
-        <h3>Kolam wkwk</h3>
-        <div
-          style={{
-            position: "relative",
-            width: "500px",
-            height: "300px",
-            border: "2px solid #999",
-            overflow: "hidden",
-            background: "#f9f9f9",
-          }}
-        >
-          {userPets.map((pet, idx) => (
-            <MovingPet key={idx} gif={pet.gif} />
-          ))}
+      {session && (
+        <div style={{ marginTop: 30 }}>
+          <h3>Kolam wkwk</h3>
+          <div
+            style={{
+              position: "relative",
+              width: "500px",
+              height: "300px",
+              border: "2px solid #999",
+              overflow: "hidden",
+              background: "#f9f9f9",
+            }}
+          >
+            {userPets.map((pet, idx) => (
+              <MovingPet key={idx} gif={pet.gif} />
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
