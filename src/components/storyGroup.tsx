@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState , useRef} from "react";
 import { Marker, Popup } from "react-leaflet";
-import L from "leaflet";
+import L, { Popup as LeafletPopup } from "leaflet";
 import type { Story } from "../types/story";
 
 interface Props {
@@ -17,6 +17,7 @@ interface Props {
 const StoryMarkerGroup = ({ stories, onSelectStory, isHotspot = false, position }: Props) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const currentStory = stories[currentIndex];
+  const popupRef = useRef<LeafletPopup>(null);
 
   const customIcon = L.divIcon({
     className: "",
@@ -32,8 +33,12 @@ const StoryMarkerGroup = ({ stories, onSelectStory, isHotspot = false, position 
     <Marker
       position={[position.lat, position.lng]}
       icon={customIcon}
+      
     >
-      <Popup key={currentIndex}>
+      <Popup ref={popupRef} 
+        autoClose={false} 
+        closeOnClick={false}
+        >
         <strong>{currentStory.location_name ?? "Tanpa Nama Lokasi"}</strong><br />
         <em>oleh: {currentStory.users?.name ?? "Anonim"}</em><br />
         {isHotspot ? <strong>🔥 Hotspot! ({stories.length} cerita)</strong> : null}
@@ -50,7 +55,12 @@ const StoryMarkerGroup = ({ stories, onSelectStory, isHotspot = false, position 
           <button
             onClick={(e) => {
               e.preventDefault();
-              setCurrentIndex((prev) => (prev === 0 ? stories.length - 1 : prev - 1));
+              const newIndex = currentIndex === 0 ? stories.length - 1 : currentIndex - 1;
+              setCurrentIndex(newIndex);
+              setTimeout(() => {
+                const anyPopup = popupRef.current as any;
+                anyPopup._source?.openPopup?.();
+              }, 0);
             }}
           >
             &lt;
@@ -61,7 +71,12 @@ const StoryMarkerGroup = ({ stories, onSelectStory, isHotspot = false, position 
           <button
             onClick={(e) => {
               e.preventDefault();
-              setCurrentIndex((prev) => (prev + 1) % stories.length);
+              const newIndex = (currentIndex + 1) % stories.length;
+              setCurrentIndex(newIndex);
+              setTimeout(() => {
+                const anyPopup = popupRef.current as any;
+                anyPopup._source?.openPopup?.();
+              }, 0);
             }}
           >
             &gt;
