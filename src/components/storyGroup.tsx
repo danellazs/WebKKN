@@ -22,12 +22,7 @@ const StoryMarkerGroup = ({ stories, onSelectStory, isHotspot = false, position 
     className: "",
     html: `
       <div style="position: relative; width: 40px; height: 40px;">
-        ${
-          isHotspot
-            ? `<img src="/pin-fire.png" style="position: absolute; top: 0; left: 0; width: 40px; height: 40px;"/>`
-            : ""
-        }
-        <img src="https://cdn-icons-png.flaticon.com/512/854/854878.png" style="position: absolute; top: 4px; left: 4px; width: 32px; height: 32px;"/>
+        <img src="https://ufcbttlleeeycgqgaqgm.supabase.co/storage/v1/object/public/stories-images/stories/pin.png" style="position: absolute; top: 4px; left: 4px; width: 32px; height: 32px;"/>
       </div>
     `,
     iconSize: [40, 40],
@@ -37,11 +32,8 @@ const StoryMarkerGroup = ({ stories, onSelectStory, isHotspot = false, position 
     <Marker
       position={[position.lat, position.lng]}
       icon={customIcon}
-      eventHandlers={{
-        click: () => onSelectStory(stories[0]),
-      }}
     >
-      <Popup>
+      <Popup key={currentIndex}>
         <strong>{currentStory.location_name ?? "Tanpa Nama Lokasi"}</strong><br />
         <em>oleh: {currentStory.users?.name ?? "Anonim"}</em><br />
         {isHotspot ? <strong>🔥 Hotspot! ({stories.length} cerita)</strong> : null}
