@@ -1,17 +1,14 @@
 import { useEffect, useState } from "react";
 import "./App.css";
-import { Auth } from "./components/auth";
-import Geolocation from "./pages/geolocation";
+import Navbar from "./components/navbar";
 import { supabase } from "./supabase-client";
 import { SessionContext } from "./context/sessionContext";
-import LocalVerificationButton from "./components/localVerification";
-import QuizGame from './components/quizGame';
-
-
+import Geolocation from "./pages/geolocation";
+import Testing from "./pages/testing";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
   const [session, setSession] = useState<any>(null);
-  const [showAuth, setShowAuth] = useState(false);
 
   useEffect(() => {
     async function fetchSession() {
@@ -23,7 +20,6 @@ function App() {
     const { data: authListener } = supabase.auth.onAuthStateChange(
       (_event, session) => {
         setSession(session);
-        if (session) setShowAuth(false);
       }
     );
 
@@ -32,44 +28,18 @@ function App() {
     };
   }, []);
 
-  const logout = async () => {
-    await supabase.auth.signOut();
-  };
-
   return (
-    <SessionContext.Provider value={session}>
-      <div className="app-wrapper">
-        {session ? (
-          <>
-            <button onClick={logout}>Log Out</button>
-          </>
-        ) : (
-          <>
-            <button onClick={() => setShowAuth(true)}>Login / Sign Up</button>
-          </>
-        )}
-
-        {/* Main app content always rendered */}
-        <Geolocation />
-        <LocalVerificationButton />
-        <QuizGame />
-
-        {/* Conditionally render Auth modal/form */}
-        {showAuth && (
-          <div className="auth-modal-overlay">
-            <div className="auth-modal-content">
-              <button
-                onClick={() => setShowAuth(false)}
-                className="auth-modal-close-button"
-              >
-                Close
-              </button>
-              <Auth />
-            </div>
-          </div>
-        )}
-      </div>
-    </SessionContext.Provider>
+    <BrowserRouter>
+      <SessionContext.Provider value={session}>
+        <div className="app-wrapper">
+          <Navbar />
+          <Routes>
+            <Route path="/geolocation" element={<Geolocation />} />
+            <Route path="/testing" element={<Testing />} />
+          </Routes>
+        </div>
+      </SessionContext.Provider>
+    </BrowserRouter>
   );
 }
 

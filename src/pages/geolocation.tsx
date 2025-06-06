@@ -6,6 +6,9 @@ import { MapContainer, TileLayer } from "react-leaflet";
 import StoryForm from "../components/storyForm";
 import StoryMap from "../components/mapping";
 import ConversationPanel from "../components/conversationPanel";
+import LocalVerificationButton from "../components/localVerification";
+import QuizGame from "../components/quizGame";
+
 
 import type { Story } from "../types/story";
 
@@ -140,6 +143,9 @@ const Geolocation = () => {
           onSelectStory={setSelectedStory}
         />
       </MapContainer>
+
+      <LocalVerificationButton />
+      <QuizGame />
 
       {selectedStory && (
         <ConversationPanel

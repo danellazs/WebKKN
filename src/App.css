@@ -343,3 +343,20 @@
   height: 80px;
   object-fit: contain;
 }
+
+nav {
+  background-color: #333;
+  padding: 10px;
+}
+ul {
+  display: flex;
+  list-style: none;
+  gap: 15px;
+}
+li a {
+  color: white;
+  text-decoration: none;
+}
+li a:hover {
+  text-decoration: underline;
+}
