@@ -357,15 +357,6 @@ nav {
   z-index: 800;
 }
 
-nav .container {
-  max-width: 100%;       /* Or 100%, or adjust as needed */
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-}
-
 nav ul {
   list-style: none;
   display: flex;
@@ -386,10 +377,19 @@ li a:hover {
 }
 
 .container {
-  width: 100%;
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: 5px;
-  padding-right: 5px;
+  max-width: 90vw; /* 90% of viewport width */
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  padding: 0 1rem;
   box-sizing: border-box;
+  background-color: red;
+  
+}
+
+.page-content {
+  width: 100%;
+  margin: 0 auto;
 }

@@ -1,3 +1,5 @@
+//C:\Users\user\Desktop\github\kkn\kknpaloh\src\components\navbar.tsx
+
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { supabase } from "../supabase-client";

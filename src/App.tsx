@@ -1,3 +1,5 @@
+//C:\Users\user\Desktop\github\kkn\kknpaloh\src\App.tsx
+
 import { useEffect, useState } from "react";
 import "./App.css";
 import Navbar from "./components/navbar";
@@ -31,12 +33,14 @@ function App() {
   return (
     <BrowserRouter>
       <SessionContext.Provider value={session}>
-        <div>
+        <div className="container">
           <Navbar />
+          <div className="page-content">
           <Routes>
             <Route path="/geolocation" element={<Geolocation />} />
             <Route path="/testing" element={<Testing />} />
           </Routes>
+          </div>
         </div>
       </SessionContext.Provider>
     </BrowserRouter>

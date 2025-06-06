@@ -1,7 +1,9 @@
+//C:\Users\user\Desktop\github\kkn\kknpaloh\src\pages\testing.tsx
+
 const Testing = () => {
   return (
-    <div>
-      <h2>testing parallax</h2>
+    <div className="container">
+      <p>testing parallax</p>
     </div>
   );
 };

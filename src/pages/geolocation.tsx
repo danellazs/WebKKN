@@ -1,3 +1,5 @@
+//C:\Users\user\Desktop\github\kkn\kknpaloh\src\pages\geolocation.tsx
+
 import { useContext, useState, useEffect } from "react";
 import { SessionContext } from "../context/sessionContext";
 import { supabase } from "../supabase-client";
