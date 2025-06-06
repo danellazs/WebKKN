@@ -3,15 +3,11 @@ import MovingPet from "./movingPet";
 import "../App.css";
 import type { Pet } from "../types/pet";
 
-const PetPool = ({ userPets }: { userPets: Pet[] }) => {
+const PetPool = ({ userPets, allPets }: { userPets: Pet[]; allPets: Pet[] }) => {
   const [showPopup, setShowPopup] = useState(false);
   const [selectedPet, setSelectedPet] = useState<Pet | null>(null);
 
   if (userPets.length === 0) return null;
-
-  const uniquePets = Array.from(
-    new Map(userPets.map((pet) => [pet.id, pet])).values()
-  );
 
   return (
     <div className="pet-container">
@@ -37,25 +33,31 @@ const PetPool = ({ userPets }: { userPets: Pet[] }) => {
             className="pet-popup-content"
             onClick={(e) => e.stopPropagation()}
           >
-            <h2>Daftar Pet yang Kamu Miliki</h2>
-            <ul className="pet-list">
-              {uniquePets.map((pet) => (
-                <li
-                  key={pet.id}
-                  className="pet-list-item"
-                  onClick={() => setSelectedPet(pet)}
-                  style={{ cursor: "pointer" }}
-                  title="Klik untuk melihat deskripsi"
-                >
-                  <img
-                    src={pet.gif_url}
-                    alt={pet.name}
-                    className="pet-list-img"
-                  />
-                  {pet.name}
-                </li>
-              ))}
-            </ul>
+            {/* 🔽 NEW SECTION: ALL PETS DISPLAYED WITH OWNED CHECK 🔽 */}
+            <div className="pet-list-section">
+              <h3>📜 Semua Pet yang Tersedia</h3>
+              <div className="pet-list-grid">
+                {allPets.map((pet) => {
+                  const owned = userPets.some((up) => up.id === pet.id);
+                  return (
+                    <div
+                      key={pet.id}
+                      className={`pet-card ${owned ? "owned" : "unowned"}`}
+                      onClick={() => setSelectedPet(pet)}
+                    >
+                      <img
+                        src={pet.gif_url}
+                        alt={pet.name}
+                        className="pet-image"
+                      />
+                      <div>{pet.name}</div>
+                      <div>{owned ? "✅ Dimiliki" : "❌ Belum"}</div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+            {/* 🔼 END NEW SECTION 🔼 */}
             <button
               className="pet-btn-close"
               onClick={() => setShowPopup(false)}

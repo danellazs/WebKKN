@@ -308,3 +308,38 @@
   background: #f9f9f9;
   margin-top: 10px;
 }
+
+.pet-list-section {
+  margin-top: 2rem;
+}
+
+.pet-list-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.pet-card {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 0.5rem;
+  width: 120px;
+  text-align: center;
+  transition: 0.3s ease;
+}
+
+.pet-card.owned {
+  background-color: #e0ffe0;
+  opacity: 1;
+}
+
+.pet-card.unowned {
+  background-color: #fff;
+  opacity: 0.4;
+}
+
+.pet-image {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+}

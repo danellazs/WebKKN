@@ -97,7 +97,7 @@ const Gacha = ({ points, refreshPoints }: { points: number; refreshPoints: () =>
         {loading ? "Sedang gacha..." : `Gacha (Harga: ${GACHA_COST} points)`}
       </button>
 
-      <PetPool userPets={userPets} />
+      <PetPool userPets={userPets} allPets={allPets} />
 
       {result && (
         <div style={{ marginTop: 20 }}>
@@ -105,6 +105,8 @@ const Gacha = ({ points, refreshPoints }: { points: number; refreshPoints: () =>
           <img src={result.gif_url} alt={result.name} width={150} height={150} />
         </div>
       )}
+
+
     </div>
   );
 };
