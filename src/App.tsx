@@ -31,7 +31,7 @@ function App() {
   return (
     <BrowserRouter>
       <SessionContext.Provider value={session}>
-        <div className="container">
+        <div>
           <Navbar />
           <Routes>
             <Route path="/geolocation" element={<Geolocation />} />

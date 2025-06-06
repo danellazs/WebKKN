@@ -33,27 +33,19 @@ const Navbar = () => {
 
   return (
     <nav>
-      <ul>
-        <li>
-          <Link to="/testing">Testing yak</Link>
-        </li>
-        <li>
-          <Link to="/geolocation">Geoloc</Link>
-        </li>
-
-        {/* **TOMBOL LOGIN / SIGN UP DAN LOGOUT** */}
-        <li style={{ marginLeft: "auto" }}>
-          {session ? (
-            <button onClick={logout} style={{ cursor: "pointer" }}>
-              Log Out
-            </button>
-          ) : (
-            <button onClick={() => setShowAuth(true)} style={{ cursor: "pointer" }}>
-              Login / Sign Up
-            </button>
-          )}
-        </li>
-      </ul>
+      <div className="container">
+        <ul>
+          <li><Link to="/testing">Testing yak</Link></li>
+          <li><Link to="/geolocation">Geoloc</Link></li>
+          <li style={{ marginLeft: "auto" }}>
+            {session ? (
+              <button onClick={logout}>Log Out</button>
+            ) : (
+              <button onClick={() => setShowAuth(true)}>Login / Sign Up</button>
+            )}
+          </li>
+        </ul>
+      </div>
 
       {/* **MODAL AUTH JUGA DIPINDAH KE SINI** */}
       {showAuth && (

@@ -344,15 +344,39 @@
   object-fit: contain;
 }
 
+/* App.css or Navbar.css */
+
 nav {
-  background-color: #333;
-  padding: 10px;
+  background-color: #222;
+  color: white;
+  padding: 0.5rem 1rem;
+  width: 100%; /* Full width of screen */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  position: sticky;
+  top: 0;
+  z-index: 800;
 }
-ul {
+
+nav .container {
+  max-width: 100%;       /* Or 100%, or adjust as needed */
+  margin: 0 auto;
   display: flex;
-  list-style: none;
-  gap: 15px;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
 }
+
+nav ul {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
 li a {
   color: white;
   text-decoration: none;
