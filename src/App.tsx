@@ -33,7 +33,7 @@ function App() {
   return (
     <BrowserRouter>
       <SessionContext.Provider value={session}>
-        <div className="container">
+        <div className="nav-container">
           <Navbar />
           <div className="page-content">
           <Routes>

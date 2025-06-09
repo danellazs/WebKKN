@@ -1,9 +1,10 @@
-//C:\Users\user\Desktop\github\kkn\kknpaloh\src\pages\testing.tsx
+// src/pages/testing.tsx
+import Hero from "../components/hero";
 
 const Testing = () => {
   return (
-    <div className="container">
-      <p>testing parallax</p>
+    <div>
+      <Hero />
     </div>
   );
 };

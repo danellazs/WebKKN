@@ -35,7 +35,7 @@ const Navbar = () => {
 
   return (
     <nav>
-      <div className="container">
+      <div className="nav-container">
         <ul>
           <li><Link to="/testing">Testing yak</Link></li>
           <li><Link to="/geolocation">Geoloc</Link></li>
@@ -47,6 +47,8 @@ const Navbar = () => {
             )}
           </li>
         </ul>
+
+        
       </div>
 
       {/* **MODAL AUTH JUGA DIPINDAH KE SINI** */}
