@@ -473,6 +473,8 @@ nav ul li:hover::after {
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
+  overflow: hidden;
 }
 
 .hero-overlay {
@@ -482,19 +484,37 @@ nav ul li:hover::after {
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
 }
 
 .hero-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 3;
   text-align: center;
-  padding: 1rem;
   color: white;
-  animation: fade-in-up 1s ease forwards; /* optional */
+  padding: 1rem;
+  animation: fade-in-up 1s ease forwards;
 }
 
 .hero-text h1 {
   font-weight: bold;
   font-size: 2rem;
 }
+
+.hero-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: auto;
+  z-index: 0;
+  pointer-events: none;
+  object-fit: cover;
+}
+
+
 
 @media (min-width: 768px) {
   .hero-text h1 {
@@ -512,10 +532,20 @@ nav ul li:hover::after {
 @keyframes fade-in-up {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translate(-50%, -30%);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translate(-50%, -50%);
   }
+}
+
+.ombak-image {
+  position: relative; /* or relative, depending on your layout */
+  bottom: 0;          /* for example, stick it to the bottom */
+  left: 0;            /* align left */
+  width: 100%;        /* or smaller size */
+  height: auto;
+  z-index: 1;         /* on top of pasir image */
+  pointer-events: none; /* so it doesn't block clicks */
 }
