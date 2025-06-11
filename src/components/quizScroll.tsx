@@ -142,7 +142,7 @@ const ScrollQuiz: React.FC<ScrollQuizProps> = ({ isVisible, onClose }) => {
         {/* Quiz content */}
         <div className="scroll-content">
           <div className="scroll-header">
-            <h2>📜 Kuis Pengetahuan Kuno 📜</h2>
+            <h2> Kuis Pengetahuan Kuno </h2>
           </div>
 
           <div className="quiz-questions">
@@ -177,22 +177,13 @@ const ScrollQuiz: React.FC<ScrollQuizProps> = ({ isVisible, onClose }) => {
           <div className="quiz-actions">
             {!submitted ? (
               <button className="submit-btn" onClick={handleSubmit}>
-                🏺 Submit Jawaban
+                 Submit Jawaban
               </button>
             ) : (
               <div className="score-display">
-                <p>🎉 Skor kamu: <strong>{score} poin</strong> 🎉</p>
+                <p> Skor kamu: <strong>{score} poin</strong> 🎉</p>
               </div>
             )}
-          </div>
-
-          {/* Point Display and Gacha */}
-          <div className="quiz-extras">
-            <PointDisplay refreshTrigger={refreshTrigger} />
-            <Gacha
-              points={points}
-              refreshPoints={() => setRefreshTrigger(prev => prev + 1)}
-            />
           </div>
         </div>
       </div>
