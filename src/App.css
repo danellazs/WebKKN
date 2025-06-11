@@ -549,3 +549,335 @@ nav ul li:hover::after {
   z-index: 1;         /* on top of pasir image */
   pointer-events: none; /* so it doesn't block clicks */
 }
+
+
+/* ScrollQuiz.css */
+
+/* ScrollQuiz.css */
+
+.scroll-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(3px);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.scroll-container {
+  position: relative;
+  max-width: 800px;
+  max-height: 90vh;
+  width: 100%;
+  transform: translateY(100vh);
+  transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  display: flex;
+  flex-direction: column;
+}
+
+.scroll-container.animate-up {
+  transform: translateY(0);
+}
+
+.scroll-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.scroll-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: sepia(20%) saturate(150%) brightness(1.1);
+  min-height: 100%;
+}
+
+.scroll-close-btn {
+  position: absolute;
+  top: 15px;
+  right: 25px;
+  z-index: 10;
+  background: rgba(139, 69, 19, 0.8);
+  color: #f4e4bc;
+  border: 2px solid #8b4513;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.scroll-close-btn:hover {
+  background: rgba(160, 82, 45, 0.9);
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.scroll-content {
+  position: relative;
+  z-index: 5;
+  padding: 40px;
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: calc(90vh - 0px);
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  /* Custom scrollbar untuk tema kuno */
+}
+
+.scroll-content::-webkit-scrollbar {
+  width: 12px;
+}
+
+.scroll-content::-webkit-scrollbar-track {
+  background: rgba(139, 69, 19, 0.2);
+  border-radius: 6px;
+  margin: 10px 0;
+}
+
+.scroll-content::-webkit-scrollbar-thumb {
+  background: rgba(139, 69, 19, 0.6);
+  border-radius: 6px;
+  border: 2px solid rgba(244, 228, 188, 0.2);
+}
+
+.scroll-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(139, 69, 19, 0.8);
+}
+
+.scroll-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.scroll-header h2 {
+  color: #2c1810;
+  font-family: 'Serif', Georgia, serif;
+  font-size: 28px;
+  margin: 0;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+  font-weight: bold;
+}
+
+.quiz-questions {
+  margin-bottom: 25px;
+}
+
+.question-item {
+  background: rgba(244, 228, 188, 0.15);
+  border: 1px solid rgba(139, 69, 19, 0.3);
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.question-text {
+  color: #2c1810;
+  font-size: 16px;
+  margin-bottom: 15px;
+  font-family: 'Serif', Georgia, serif;
+  line-height: 1.5;
+}
+
+.choices-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.choice-item {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(139, 69, 19, 0.2);
+  border-radius: 6px;
+  padding: 12px;
+  transition: all 0.3s ease;
+}
+
+.choice-item:hover {
+  background: rgba(244, 228, 188, 0.2);
+  border-color: rgba(139, 69, 19, 0.4);
+  transform: translateX(3px);
+}
+
+.choice-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  width: 100%;
+}
+
+.choice-radio {
+  margin-right: 12px;
+  transform: scale(1.2);
+  accent-color: #8b4513;
+}
+
+.choice-text {
+  color: #2c1810;
+  font-size: 14px;
+  font-family: 'Serif', Georgia, serif;
+  line-height: 1.4;
+}
+
+.quiz-actions {
+  text-align: center;
+  margin: 25px 0;
+}
+
+.submit-btn {
+  background: linear-gradient(145deg, #d4a574, #b8956a);
+  color: #2c1810;
+  border: 2px solid #8b4513;
+  border-radius: 25px;
+  padding: 12px 30px;
+  font-size: 16px;
+  font-weight: bold;
+  font-family: 'Serif', Georgia, serif;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.submit-btn:hover {
+  background: linear-gradient(145deg, #e2b887, #c6a376);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.submit-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.score-display {
+  background: rgba(212, 175, 55, 0.2);
+  border: 2px solid #d4af37;
+  border-radius: 15px;
+  padding: 15px 25px;
+  display: inline-block;
+}
+
+.score-display p {
+  color: #2c1810;
+  font-size: 18px;
+  margin: 0;
+  font-family: 'Serif', Georgia, serif;
+  font-weight: bold;
+}
+
+.quiz-extras {
+  border-top: 1px solid rgba(139, 69, 19, 0.3);
+  padding-top: 20px;
+  margin-top: 20px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .scroll-content {
+    padding: 25px 20px;
+    max-height: calc(90vh - 0px);
+  }
+  
+  .scroll-header h2 {
+    font-size: 22px;
+  }
+  
+  .question-item {
+    padding: 15px;
+  }
+  
+  .question-text {
+    font-size: 15px;
+  }
+  
+  .choice-text {
+    font-size: 13px;
+  }
+  
+  .submit-btn {
+    padding: 10px 25px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .scroll-overlay {
+    padding: 10px;
+  }
+  
+  .scroll-content {
+    padding: 20px 15px;
+    max-height: calc(90vh - 0px);
+  }
+  
+  .scroll-header h2 {
+    font-size: 20px;
+  }
+  
+  .choice-item {
+    padding: 10px;
+  }
+}
+
+/* Animation untuk elemen yang muncul */
+.question-item {
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+.question-item:nth-child(1) { animation-delay: 0.1s; }
+.question-item:nth-child(2) { animation-delay: 0.2s; }
+.question-item:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Glow effect untuk submit button */
+.submit-btn {
+  position: relative;
+  overflow: hidden;
+}
+
+.submit-btn::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+  transform: scale(0);
+  transition: transform 0.5s ease;
+}
+
+.submit-btn:hover::before {
+  transform: scale(1);
+}

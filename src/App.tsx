@@ -8,6 +8,7 @@ import { SessionContext } from "./context/sessionContext";
 import Geolocation from "./pages/geolocation";
 import Testing from "./pages/testing";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Game from "./pages/game";
 
 function App() {
   const [session, setSession] = useState<any>(null);
@@ -39,6 +40,7 @@ function App() {
           <Routes>
             <Route path="/geolocation" element={<Geolocation />} />
             <Route path="/testing" element={<Testing />} />
+            <Route path="/game" element={<Game />} />
           </Routes>
           </div>
         </div>

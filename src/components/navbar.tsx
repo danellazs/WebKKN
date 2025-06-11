@@ -39,6 +39,7 @@ const Navbar = () => {
         <ul>
           <li><Link to="/testing">Testing yak</Link></li>
           <li><Link to="/geolocation">Geoloc</Link></li>
+          <li><Link to="/game">Game</Link></li>
           <li style={{ marginLeft: "auto" }}>
             {session ? (
               <button onClick={logout}>Log Out</button>
