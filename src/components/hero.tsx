@@ -20,8 +20,8 @@ const Hero: React.FC = () => {
   }, []);
 
   const ombak1Move = Math.min(scrollOffset * 0.1, 80);
-  const ombak2Move = Math.min(scrollOffset * 0.05, 40);
-  const ombak3Move = Math.min(scrollOffset * 0.015, 20);
+  const ombak2Move = Math.min(scrollOffset * 0.08, 60);
+  const ombak3Move = Math.min(scrollOffset * 0.05, 20);
 
   return (
     <section
@@ -42,7 +42,7 @@ const Hero: React.FC = () => {
         style={{
           width: "100%",
           height: "auto",
-          position: "relative",
+          position: "absolute",
           zIndex: 0,
         }}
       />
@@ -54,8 +54,8 @@ const Hero: React.FC = () => {
           zIndex: 1,
           position: "absolute",
           width: "100%",
-          top: "clamp(30px, 7vw, -10px)",
-          transform: `translateY(-${ombak1Move+ 100}px)`,
+          top: "clamp(30px, 7vw, 50px)",
+          transform: `translateY(-${ombak1Move + 100}px)`,
         }}
       />
 
@@ -66,8 +66,8 @@ const Hero: React.FC = () => {
           zIndex: 2,
           position: "absolute",
           width: "100%",
-          top: "clamp(30px, 7vw, 100px)",
-          transform: `translateY(-${ombak2Move +150}px)`,
+          top: "clamp(30px, 7vw, 50px)",
+          transform: `translateY(-${ombak2Move + 140}px)`,
         }}
       />
 
@@ -78,8 +78,8 @@ const Hero: React.FC = () => {
           zIndex: 3,
           position: "absolute",
           width: "100%",
-          top: "clamp(30px, 70vw, 800px)",
-          transform: `translateY(-${ombak3Move - 10}px)`,
+          top: "clamp(300px, 70vw, 7000px)",
+          transform: `translateY(-${ombak3Move}px)`,
         }}
       />
 

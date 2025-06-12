@@ -464,6 +464,8 @@ nav ul li:hover::after {
 }
 
 .hero-section {
+  min-height: 100%;
+  aspect-ratio: 725 / 638;
   background-repeat: no-repeat;
   background-size: cover;
   background-position: bottom;
@@ -473,18 +475,18 @@ nav ul li:hover::after {
   align-items: center;
   justify-content: center;
   position: relative;
-  overflow-y: visible;
-  aspect-ratio: 725 / 638;
+  overflow: hidden;
 }
 
 .hero-overlay {
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); /* black with 50% opacity */
+  background-color: rgba(0, 0, 0, 0.1); /* black with 50% opacity */
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
+  z-index: 1;
 }
 
 .hero-text {
@@ -496,6 +498,7 @@ nav ul li:hover::after {
   color: white;
   padding: 1rem;
   animation: fade-in-up 1s ease forwards;
+  z-index: 5;
 }
 
 .hero-text h1 {
@@ -547,6 +550,7 @@ nav ul li:hover::after {
   pointer-events: none;
   transition: transform 0.2s ease-out;
 }
+
 
 
 
