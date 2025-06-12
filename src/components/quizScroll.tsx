@@ -1,8 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
 import { supabase } from "../supabase-client";
 import { SessionContext } from "../context/sessionContext";
-import PointDisplay from "./pointDisplay";
-import Gacha from "./gacha";
 import scrollImage from "../assets/scroll.png";
 
 type QuizChoice = {
