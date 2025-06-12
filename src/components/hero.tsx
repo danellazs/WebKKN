@@ -19,9 +19,10 @@ const Hero: React.FC = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const ombak1Move = Math.min(scrollOffset * 0.2, 80);
-  const ombak2Move = Math.min(scrollOffset * 0.15, 60);
-  const ombak3Move = Math.min(scrollOffset * 0.5, 60);
+  const ombak1Move = Math.min(scrollOffset * 0.3, 60);
+  const ombak2Move = Math.min(scrollOffset * 0.2, 50);  
+  const ombak3Move = Math.min(scrollOffset * 0.1, 30);  
+
 
   return (
     <section
@@ -68,7 +69,7 @@ const Hero: React.FC = () => {
           zIndex: 2,
           position: "absolute",
           width: "100%",
-          top: "clamp(30px, 7vw, 50px)",
+          top: "clamp(60px, 9vw, 80px)",
           left: "0",
           right: "0", 
           transform: `translateY(-${ombak2Move + 140}px)`,
