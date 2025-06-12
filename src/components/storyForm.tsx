@@ -118,31 +118,32 @@ const StoryForm = ({ position, session, onSubmitted, fetchStories, refreshLocati
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ marginBottom: "1rem" }}>
+    <form onSubmit={handleSubmit} className="story-form">
       <textarea
         placeholder="Isi ceritamu..."
         value={content}
         onChange={(e) => setContent(e.target.value)}
-        style={{ width: "100%", padding: "0.5rem", marginBottom: "0.5rem" }}
       />
       <input
         type="text"
         placeholder="Nama lokasi (opsional)"
         value={locationName}
         onChange={(e) => setLocationName(e.target.value)}
-        style={{ width: "100%", padding: "0.5rem", marginBottom: "0.5rem" }}
       />
       <ImageUpload
         image={image}
         imagePreview={imagePreview}
         setImage={setImage}
         setImagePreview={setImagePreview}
+        
       />
       <TagInput selectedTags={selectedTags} setSelectedTags={setSelectedTags} />
-      <button type="submit" style={{ padding: "0.5rem 1rem" }}>Kirim Cerita</button>
-      <button type="button" onClick={refreshLocation}>
-        Perbarui Lokasi
-      </button>
+      <div className="story-buttons">
+        <button type="submit" className="story-submit-button">Kirim Cerita</button>
+        <button type="button" onClick={refreshLocation} className="story-refresh-button">
+          Perbarui Lokasi
+        </button>
+      </div>
     </form>
   );
 };

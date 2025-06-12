@@ -1,4 +1,10 @@
-import { useEffect, useState, type ChangeEvent, type KeyboardEvent, type FocusEvent } from "react";
+import {
+  useEffect,
+  useState,
+  type ChangeEvent,
+  type KeyboardEvent,
+  type FocusEvent,
+} from "react";
 import { supabase } from "../supabase-client";
 
 type TagInputProps = {
@@ -9,7 +15,7 @@ type TagInputProps = {
 const TagInput = ({ selectedTags, setSelectedTags }: TagInputProps) => {
   const [availableTags, setAvailableTags] = useState<string[]>([]);
   const [input, setInput] = useState("");
-  const [isFocused, setIsFocused] = useState(false); // 👈 untuk deteksi fokus input
+  const [isFocused, setIsFocused] = useState(false);
 
   useEffect(() => {
     const fetchTags = async () => {
@@ -46,7 +52,6 @@ const TagInput = ({ selectedTags, setSelectedTags }: TagInputProps) => {
 
   const handleFocus = () => setIsFocused(true);
   const handleBlur = (_e: FocusEvent<HTMLInputElement>) => {
-    // Tunggu sedikit agar klik suggestion bisa terdeteksi
     setTimeout(() => setIsFocused(false), 100);
   };
 
@@ -56,24 +61,13 @@ const TagInput = ({ selectedTags, setSelectedTags }: TagInputProps) => {
         tag.toLowerCase().includes(input.toLowerCase()) &&
         !selectedTags.includes(tag)
     )
-    .slice(0, 3); // 👈 batasi ke 3 saran teratas
+    .slice(0, 3);
 
   return (
-    <div style={{ marginBottom: "0.5rem" }}>
-      <div style={{ display: "flex", flexWrap: "wrap", gap: "0.25rem", marginBottom: "0.5rem" }}>
+    <div className="tag-input-container">
+      <div className="tag-list">
         {selectedTags.map((tag) => (
-          <span
-            key={tag}
-            style={{
-              padding: "0.25rem 0.5rem",
-              background: "#ccc",
-              borderRadius: "1rem",
-              display: "inline-flex",
-              alignItems: "center",
-              cursor: "pointer",
-            }}
-            onClick={() => handleRemoveTag(tag)}
-          >
+          <span key={tag} className="tag-pill" onClick={() => handleRemoveTag(tag)}>
             {tag} ✕
           </span>
         ))}
@@ -86,22 +80,12 @@ const TagInput = ({ selectedTags, setSelectedTags }: TagInputProps) => {
         onKeyDown={handleKeyDown}
         onFocus={handleFocus}
         onBlur={handleBlur}
-        style={{ width: "100%", padding: "0.5rem" }}
+        className="tag-input-field"
       />
       {isFocused && filteredSuggestions.length > 0 && (
-        <ul style={{ listStyle: "none", padding: 0, marginTop: "0.25rem" }}>
+        <ul className="tag-suggestions">
           {filteredSuggestions.map((tag) => (
-            <li
-              key={tag}
-              onClick={() => handleAddTag(tag)}
-              style={{
-                padding: "0.25rem",
-                cursor: "pointer",
-                background: "#eee",
-                marginBottom: "0.25rem",
-                borderRadius: "0.25rem",
-              }}
-            >
+            <li key={tag} onClick={() => handleAddTag(tag)}>
               {tag}
             </li>
           ))}

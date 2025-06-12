@@ -29,38 +29,17 @@ const ImageUpload = ({
     setImage(null);
     setImagePreview(null);
   };
-
-  return (
-    <div style={{ marginBottom: "1rem" }}>
-      <label style={{ display: "block", marginBottom: "0.5rem" }}>
+return (
+    <div className="image-upload">
+      <label className="image-upload-label">
         Upload Gambar:
         <input type="file" accept="image/*" onChange={handleImageChange} />
       </label>
 
       {imagePreview && (
-        <div style={{ marginTop: "0.5rem", position: "relative" }}>
-          <img
-            src={imagePreview}
-            alt="Preview"
-            style={{
-              maxWidth: "100%",
-              borderRadius: "0.5rem",
-              display: "block",
-            }}
-          />
-          <button
-            type="button"
-            onClick={clearImage}
-            style={{
-              marginTop: "0.5rem",
-              backgroundColor: "#e74c3c",
-              color: "white",
-              border: "none",
-              padding: "0.3rem 0.6rem",
-              borderRadius: "0.3rem",
-              cursor: "pointer",
-            }}
-          >
+        <div className="image-preview-container">
+          <img src={imagePreview} alt="Preview" className="image-preview" />
+          <button type="button" onClick={clearImage} className="image-clear-button">
             Hapus Gambar
           </button>
         </div>
@@ -68,5 +47,7 @@ const ImageUpload = ({
     </div>
   );
 };
+
+
 
 export default ImageUpload;

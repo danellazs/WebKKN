@@ -9,7 +9,7 @@ import StoryForm from "../components/storyForm";
 import StoryMap from "../components/mapping";
 import ConversationPanel from "../components/conversationPanel";
 import LocalVerificationButton from "../components/localVerification";
-import QuizGame from "../components/quizGame";
+import Navbar from "../components/navbar";
 
 
 import type { Story } from "../types/story";
@@ -112,7 +112,8 @@ const Geolocation = () => {
   }, []);
 
   return (
-    <div>
+    <div className="geo-container">
+      <Navbar />
       <h2>Tambahkan Cerita Lokasi</h2>
 
       <StoryForm
@@ -147,7 +148,6 @@ const Geolocation = () => {
       </MapContainer>
 
       <LocalVerificationButton />
-      <QuizGame />
 
       {selectedStory && (
         <ConversationPanel
