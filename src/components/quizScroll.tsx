@@ -168,8 +168,11 @@ const ScrollQuiz: React.FC<ScrollQuizProps> = ({ isVisible, onClose }) => {
                     </div>
                   ))}
                 </div>
+                
               </div>
-            ))}
+              
+            ))}<p style={{ opacity: 0 }}>\{points}</p>
+
           </div>
 
           <div className="quiz-actions">
