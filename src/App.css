@@ -401,9 +401,27 @@ nav .nav-container {
 }
 
 @media (max-width: 768px) {
-  .menu-toggle {
-    display: block;
+  nav {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0); /* Transparent dark overlay */ /* Optional blur effect */
+    box-shadow: none;
   }
+
+  .menu-toggle {
+  display: block;
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 1100; /* higher than nav */
+  background: none;
+  border: none;
+  font-size: 1rem;
+  color: white;
+  cursor: pointer;
+}
 
   .nav-container {
     flex-direction: column;
@@ -411,9 +429,10 @@ nav .nav-container {
   }
 
   .nav-links {
-    flex-direction: column;
-    width: 100%;
     display: none;
+    background: rgba(174,188,198, 0.5); /* background for dropdown links */
+    width: 100%;
+    border-radius: 8px 8px 8px 8px;
   }
 
   .nav-links.open {
