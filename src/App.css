@@ -2,6 +2,7 @@
   max-width: 1280px;
   margin: 0;
   text-align: center;
+  height: auto;
 }
 
 .logo {
@@ -464,7 +465,6 @@ nav ul li:hover::after {
 }
 
 .hero-section {
-  min-height: 100%;
   background-repeat: no-repeat;
   background-size: cover;
   background-position: bottom;
@@ -474,7 +474,8 @@ nav ul li:hover::after {
   align-items: center;
   justify-content: center;
   position: relative;
-  overflow: hidden;
+  overflow-y: visible;
+  aspect-ratio: 725 / 638;
 }
 
 .hero-overlay {
@@ -540,14 +541,14 @@ nav ul li:hover::after {
 }
 
 .ombak-image {
-  position: relative; /* or relative, depending on your layout */
-  bottom: 0;          /* for example, stick it to the bottom */
-  left: 0;            /* align left */
-  width: 100%;        /* or smaller size */
+  position: absolute;
+  left: 0;
+  width: 100%;
   height: auto;
-  z-index: 1;         /* on top of pasir image */
-  pointer-events: none; /* so it doesn't block clicks */
+  pointer-events: none;
+  transition: transform 0.2s ease-out;
 }
+
 
 
 /* ScrollQuiz.css */
