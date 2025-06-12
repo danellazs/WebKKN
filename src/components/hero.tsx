@@ -71,7 +71,7 @@ const Hero: React.FC = () => {
           top: "clamp(30px, 7vw, 50px)",
           left: "0",
           right: "0", 
-          transform: `translateY(-${ombak2Move + 165}px)`,
+          transform: `translateY(-${ombak2Move + 140}px)`,
         }}
       />
 
@@ -90,7 +90,7 @@ const Hero: React.FC = () => {
       />
 
       <div className="hero-overlay" />
-      <div className="hero-text" style={{ fontFamily: "BODAR" }}>
+      <div className="hero-text">
         <h1>
           Menjejak Asa
           <br />

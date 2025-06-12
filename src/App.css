@@ -551,6 +551,12 @@ nav ul li:hover::after {
   position: relative;
 }
 
+@font-face {
+  font-family: 'BODAR';
+  src: url('/assets/BODAR.ttf') format('truetype');
+}
+
+
 .hero-text {
   position: absolute;
   top: 50%;
@@ -560,6 +566,8 @@ nav ul li:hover::after {
   color: white;
   padding: 1rem;
   animation: fade-in-up 1s ease forwards;
+  
+  font-family: 'BODAR', sans-serif;
 }
 
 .hero-text h1 {
