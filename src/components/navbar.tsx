@@ -1,14 +1,12 @@
-//C:\Users\user\Desktop\github\kkn\kknpaloh\src\components\navbar.tsx
-
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { supabase } from "../supabase-client";
 import { Auth } from "./auth";
 
 const Navbar = () => {
-  // **STATE DAN FUNGSI UNTUK AUTH**
   const [session, setSession] = useState<any>(null);
   const [showAuth, setShowAuth] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
     async function fetchSession() {
@@ -36,11 +34,23 @@ const Navbar = () => {
   return (
     <nav>
       <div className="nav-container">
-        <ul>
+        <div className="nav-left">
+          <div className="nav-logo">
+            <Link to="/">Saga Ekor Borneo</Link>
+          </div>
+          <button
+            className="menu-toggle"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+          >
+            ☰
+          </button>
+        </div>
+
+        <ul className={`nav-links ${isMenuOpen ? "open" : ""}`}>
           <li><Link to="/testing">Testing yak</Link></li>
           <li><Link to="/geolocation">Geoloc</Link></li>
           <li><Link to="/game">Game</Link></li>
-          <li style={{ marginLeft: "auto" }}>
+          <li className="auth-button">
             {session ? (
               <button onClick={logout}>Log Out</button>
             ) : (
@@ -48,11 +58,8 @@ const Navbar = () => {
             )}
           </li>
         </ul>
-
-        
       </div>
 
-      {/* **MODAL AUTH JUGA DIPINDAH KE SINI** */}
       {showAuth && (
         <div className="auth-modal-overlay">
           <div className="auth-modal-content">

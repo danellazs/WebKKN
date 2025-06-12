@@ -20,7 +20,7 @@ const Hero: React.FC = () => {
   }, []);
 
   const ombak1Move = Math.min(scrollOffset * 0.2, 80);
-  const ombak2Move = Math.min(scrollOffset * 0.1, 60);
+  const ombak2Move = Math.min(scrollOffset * 0.15, 60);
   const ombak3Move = Math.min(scrollOffset * 0.5, 40);
 
   return (
@@ -55,6 +55,8 @@ const Hero: React.FC = () => {
           position: "absolute",
           width: "100%",
           top: "clamp(30px, 7vw, 50px)",
+          left: "0",
+          right: "0",
           transform: `translateY(-${ombak1Move + 100}px)`,
         }}
       />
@@ -67,6 +69,8 @@ const Hero: React.FC = () => {
           position: "absolute",
           width: "100%",
           top: "clamp(30px, 7vw, 50px)",
+          left: "0",
+          right: "0", 
           transform: `translateY(-${ombak2Move + 140}px)`,
         }}
       />
@@ -78,6 +82,8 @@ const Hero: React.FC = () => {
           zIndex: 3,
           position: "absolute",
           width: "100%",
+          left: "0",
+          right: "0", 
           top: "clamp(300px, 70vw, 7000px)",
           transform: `translateY(-${ombak3Move}px)`,
         }}
