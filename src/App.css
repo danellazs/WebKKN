@@ -444,14 +444,30 @@ form.story-form {
   object-fit: contain;
 }
 
-/* App.css or Navbar.css */
+/* Reset default margins and padding */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Make sure body doesn't have default margins */
+body {
+  margin: 0;
+  padding: 0;
+}
+
+/* Fixed Navbar CSS */
 nav {
-  background: linear-gradient(135deg, #0077be, #00bfff); /* 🟦 Water blue gradient */
+  width: 100vw; /* Use viewport width instead of 100% */
+  background: linear-gradient(135deg, #0077be, #00bfff);
   color: white;
   padding: 0;
+  margin: 0; /* Ensure no margin */
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   position: sticky;
   top: 0;
+  left: 0; /* Ensure it starts from the very left */
   z-index: 1500;
   min-height: 60px;
   display: flex;
@@ -465,8 +481,8 @@ nav .nav-container {
   justify-content: space-between;
   flex-wrap: wrap;
   width: 100%;
-  max-width: 1280px;
-  margin: 0 auto;
+  max-width: none; /* Remove max-width constraint */
+  margin: 0;
   padding: 0 2rem;
   box-sizing: border-box;
   min-height: inherit;
@@ -483,9 +499,8 @@ nav .nav-container {
 
 .nav-logo a {
   color: white;
-  text-decoration: none; /* Optional: remove underline */
+  text-decoration: none;
 }
-
 
 .menu-toggle {
   display: none;
@@ -497,46 +512,49 @@ nav .nav-container {
   padding: 0.5rem;
   line-height: 1;
   margin-left: auto;
-
 }
 
 @media (max-width: 768px) {
   nav {
-    position: absolute;
+    position: fixed; /* Changed from absolute to fixed */
     top: 0;
     left: 0;
     right: 0;
-    background: rgba(0, 0, 0, 0); /* Transparent dark overlay */ /* Optional blur effect */
-    box-shadow: none;
+    width: 100vw;
+    background: linear-gradient(135deg, #0077be, #00bfff); /* Keep original background */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   }
 
   .menu-toggle {
-  display: block;
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  z-index: 1100; /* higher than nav */
-  background: none;
-  border: none;
-  font-size: 1rem;
-  color: white;
-  cursor: pointer;
-}
+    display: block;
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    z-index: 1100;
+    background: none;
+    border: none;
+    font-size: 1rem;
+    color: white;
+    cursor: pointer;
+  }
 
   .nav-container {
     flex-direction: column;
     align-items: flex-start;
+    padding: 0 1rem; /* Reduce padding on mobile */
   }
 
   .nav-links {
     display: none;
-    background: rgba(174,188,198, 0.5); /* background for dropdown links */
+    background: rgba(174,188,198, 0.5);
     width: 100%;
-    border-radius: 8px 8px 8px 8px;
+    border-radius: 8px;
+    margin-top: 1rem;
   }
 
   .nav-links.open {
     display: flex;
+    flex-direction: column;
   }
 
   .nav-links li {
@@ -550,7 +568,6 @@ nav .nav-container {
     text-align: left;
   }
 }
-
 
 .nav-left {
   display: flex;

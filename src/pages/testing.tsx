@@ -3,7 +3,9 @@ import Hero from "../components/hero";
 
 const Testing = () => {
   return (
+    <div>
       <Hero />
+    </div>
   );
 };
 

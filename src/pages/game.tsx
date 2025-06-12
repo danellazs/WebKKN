@@ -1,43 +1,112 @@
-// src/pages/testing.tsx
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import ScrollQuiz from "../components/quizScroll";
+import botol1 from "../assets/botol1.png";
+import botol2 from "../assets/botol2.png";
+import botol3 from "../assets/botol3.png";
 
+const getRandomPosition = () => ({
+  top: Math.floor(Math.random() * 80) + 10,
+  left: Math.floor(Math.random() * 80) + 10
+});
+
+const getRandomBotol = () => {
+  const botols = [botol1, botol2, botol3];
+  return botols[Math.floor(Math.random() * botols.length)];
+};
+
+const getRandomRotation = () => Math.floor(Math.random() * 360);
 
 const Game = () => {
+  const [scrollQuizVisible, setScrollQuizVisible] = useState(false);
+  const [botolButtons, setBotolButtons] = useState<
+    { id: number; top: number; left: number; image: string; rotation: number }[]
+  >([]);
 
-  const [showScrollQuiz, setShowScrollQuiz] = useState(false);
-
-  const openScrollQuiz = () => {
-    setShowScrollQuiz(true);
+  const handleGenerateQuiz = () => {
+    const newId = Date.now(); // unique id
+    const newBotol = {
+      id: newId,
+      ...getRandomPosition(),
+      image: getRandomBotol(),
+      rotation: getRandomRotation()
+    };
+    setBotolButtons((prev) => [...prev, newBotol]);
   };
 
-  const closeScrollQuiz = () => {
-    setShowScrollQuiz(false);
+  const clearAllBotols = () => {
+    setBotolButtons([]);
+    localStorage.removeItem("botolButtons");
   };
+
+  const openScrollQuiz = () => setScrollQuizVisible(true);
+  const closeScrollQuiz = () => setScrollQuizVisible(false);
+
   return (
-    <div>
-      <button 
+    <div style={{ position: 'relative', minHeight: '100vh' }}>
+      {/* Tombol Generate */}
+      <button
+        onClick={handleGenerateQuiz}
+        style={{
+          position: 'fixed',
+          bottom: '30px',
+          right: '30px',
+          backgroundColor: '#f0c674',
+          border: '2px solid #8b4513',
+          borderRadius: '15px',
+          padding: '15px 25px',
+          fontSize: '16px',
+          fontWeight: 'bold',
+          cursor: 'pointer',
+          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+          zIndex: 1000
+        }}
+      >
+        Generate Daily Quiz
+      </button>
+
+      {/* Tombol Clear */}
+      <button
+        onClick={clearAllBotols}
+        style={{
+          position: 'fixed',
+          bottom: '30px',
+          left: '30px',
+          backgroundColor: '#ff6b6b',
+          border: '2px solid #8b0000',
+          borderRadius: '15px',
+          padding: '10px 20px',
+          fontSize: '14px',
+          fontWeight: 'bold',
+          color: 'white',
+          cursor: 'pointer',
+          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+          zIndex: 1000
+        }}
+      >
+        Hapus Semua Botol
+      </button>
+
+      {/* Tampilkan Botol */}
+      {botolButtons.map((botol) => (
+        <img
+          key={botol.id}
+          src={botol.image}
+          alt="Botol Quiz"
           onClick={openScrollQuiz}
-          className="open-scroll-btn"
           style={{
-            background: 'linear-gradient(145deg, #d4a574, #b8956a)',
-            color: '#2c1810',
-            border: '2px solid #8b4513',
-            borderRadius: '25px',
-            padding: '12px 30px',
-            fontSize: '16px',
-            fontWeight: 'bold',
+            position: 'absolute',
+            top: `${botol.top}%`,
+            left: `${botol.left}%`,
+            transform: `translate(-50%, -50%) rotate(${botol.rotation}deg)`,
+            width: '60px',
+            height: 'auto',
             cursor: 'pointer',
-            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
-            transition: 'all 0.3s ease'
+            zIndex: 999
           }}
-        >
-          📜 Buka Kuis Kuno
-        </button>
-      <ScrollQuiz 
-        isVisible={showScrollQuiz} 
-        onClose={closeScrollQuiz} 
-      />
+        />
+      ))}
+
+      <ScrollQuiz isVisible={scrollQuizVisible} onClose={closeScrollQuiz} />
     </div>
   );
 };

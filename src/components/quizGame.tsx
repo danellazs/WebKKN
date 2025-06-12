@@ -142,7 +142,7 @@ const QuizGame = () => {
       <Gacha
         points={points}
         refreshPoints={() => setRefreshTrigger(prev => prev + 1)}
-      />
+      /> 
     </div>
   );
 };
