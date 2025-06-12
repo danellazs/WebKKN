@@ -21,7 +21,7 @@ const Hero: React.FC = () => {
 
   const ombak1Move = Math.min(scrollOffset * 0.2, 80);
   const ombak2Move = Math.min(scrollOffset * 0.15, 60);
-  const ombak3Move = Math.min(scrollOffset * 0.5, 40);
+  const ombak3Move = Math.min(scrollOffset * 0.5, 60);
 
   return (
     <section
@@ -71,7 +71,7 @@ const Hero: React.FC = () => {
           top: "clamp(30px, 7vw, 50px)",
           left: "0",
           right: "0", 
-          transform: `translateY(-${ombak2Move + 140}px)`,
+          transform: `translateY(-${ombak2Move + 165}px)`,
         }}
       />
 
