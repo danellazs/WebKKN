@@ -1,8 +1,6 @@
 // src/pages/testing.tsx
-import Hero from "../components/hero";
-import React, { useState } from 'react';
-import ScrollQuiz from "../components/quizscroll";
-import QuizGame from "../components/quizGame";
+import { useState } from 'react';
+import ScrollQuiz from "../components/quizScroll";
 
 
 const Game = () => {

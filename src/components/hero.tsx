@@ -19,9 +19,9 @@ const Hero: React.FC = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const ombak1Move = Math.min(scrollOffset * 0.1, 80);
-  const ombak2Move = Math.min(scrollOffset * 0.08, 60);
-  const ombak3Move = Math.min(scrollOffset * 0.05, 20);
+  const ombak1Move = Math.min(scrollOffset * 0.2, 80);
+  const ombak2Move = Math.min(scrollOffset * 0.1, 60);
+  const ombak3Move = Math.min(scrollOffset * 0.5, 40);
 
   return (
     <section
