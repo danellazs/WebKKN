@@ -350,7 +350,6 @@ nav {
   color: white;
   padding: 0;
   width: 100vw;
-  margin-left: calc(-50vw + 50%);
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   position: sticky;
   top: 0;
@@ -366,7 +365,7 @@ nav .nav-container {
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  width: 100%;
+  width: 100vw;
   max-width: 1280px;
   margin: 0 auto;
   padding: 0 2rem;
