@@ -130,6 +130,51 @@
   overflow-x: hidden;
 }
 
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.modal-content {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  max-width: 600px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+.modal-close {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.75rem;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.open-form-button {
+  margin: 1rem 0;
+  padding: 0.75rem 1.5rem;
+  background-color: #0077be;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
 
 form.story-form {
   width: 100%;
@@ -143,6 +188,7 @@ form.story-form {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+  z-index: 9000; /* Ensure form is above other content */
 }
 
 .story-form textarea,
@@ -649,6 +695,12 @@ nav ul li:hover::after {
   font-size: 2rem;
 }
 
+.hero-text h3 {
+  font-weight: normal;
+  font-size: 1.2rem;
+  margin: 0.5rem 0 0 0;
+}
+
 .hero-image {
   position: absolute;
   top: 0;
@@ -1115,9 +1167,49 @@ nav ul li:hover::after {
 }
 
 .geo-container {
+  background-image: url('/assets/ombak3.png');
+  background-size: cover;       /* Make image cover the whole container */
+  background-position: center;  /* Center the image */
+  background-repeat: no-repeat; /* Prevent tiling */
+  min-height: 100vh;
   width: 100%;
   max-width: 700px; /* or 800px, adjust as needed */
   margin: 0 auto;
   padding: 1rem;
   box-sizing: border-box;
+  
+}
+
+.custom-map-container .leaflet-control-attribution {
+  z-index: 1 !important;
+  font-size: 10px;
+  opacity: 0.7;
+}
+
+.story-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.story-buttons button {
+  flex: 1;
+  min-width: 120px;
+}
+
+.geoloc-title {
+  text-align: center;
+  color: white;
+  padding: 1rem;
+  font-family: 'BODAR', sans-serif;
+}
+
+.geoloc-title h1 {
+  font-weight: bold;
+  font-size: 2rem;
+}
+
+.geoloc-title h3 {
+  font-weight: normal;
+  font-size: 1.2rem;
+  margin: 0.5rem 0 0 0;
 }

@@ -29,10 +29,17 @@ const MapView = () => {
 
   return (
     <div style={{ height: '500px' }}>
-      <MapContainer center={location} zoom={20} scrollWheelZoom={false} style={{ height: '100%', width: '100%' }}>
+      <MapContainer
+        center={location}
+        zoom={20}
+        scrollWheelZoom={false}
+        className="custom-map-container"
+        attributionControl={false} 
+        style={{ height: '100%', width: '100%' }}
+      >
         <TileLayer
           url={`https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=${MAPTILER_KEY}`}
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://www.maptiler.com/">MapTiler</a>'
+          attribution="© MapTiler & OpenStreetMap"
         />
         <Marker position={location}>
           <Popup>
@@ -40,6 +47,7 @@ const MapView = () => {
           </Popup>
         </Marker>
       </MapContainer>
+
     </div>
   );
 };

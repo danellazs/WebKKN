@@ -66,6 +66,8 @@ const Geolocation = () => {
       { enableHighAccuracy: true, timeout: 10000 }
     );
   };
+  
+  const [showForm, setShowForm] = useState(false);
 
   const fetchStories = async () => {
     const { data, error } = await supabase
@@ -110,22 +112,37 @@ const Geolocation = () => {
       navigator.geolocation.clearWatch(watchId);
     };
   }, []);
-
   return (
     <div className="geo-container">
       <Navbar />
-      <h2>Tambahkan Cerita Lokasi</h2>
+      <div className="geoloc-title">
+        <h1>Setiap jejak punya cerita.</h1>
+        <h3>Tambahkan ceritamu hari ini.</h3>
+      </div>
 
-      <StoryForm
-        session={session}
-        position={position}
-        fetchStories={fetchStories}
-        refreshLocation={refreshLocation}
-        onSubmitted={() => {
-          console.log("Cerita berhasil dikirim");
-          fetchStories();
-        }}
-      />
+      <button onClick={() => setShowForm(true)} className="open-form-button">
+        ➕ Tambah Cerita
+      </button>
+
+      {showForm && (
+        <div className="modal-overlay" onClick={() => setShowForm(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <button className="modal-close" onClick={() => setShowForm(false)}>
+              ✖
+            </button>
+            <StoryForm
+              session={session}
+              position={position}
+              fetchStories={fetchStories}
+              refreshLocation={refreshLocation}
+              onSubmitted={() => {
+                setShowForm(false);
+                fetchStories();
+              }}
+            />
+          </div>
+        </div>
+      )}
 
       <p>📍 Posisi saat ini: {position.lat.toFixed(5)}, {position.lng.toFixed(5)}</p>
 
@@ -139,10 +156,8 @@ const Geolocation = () => {
           url={`https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=${MAPTILER_KEY}`}
           attribution="&copy; OpenStreetMap & MapTiler"
         />
-
-        {/* ✅ Ensure prop name matches what StoryMap expects */}
         <StoryMap
-          stories={clusteredStories} // change to "stories" if that’s what your prop is called
+          stories={clusteredStories}
           onSelectStory={setSelectedStory}
         />
       </MapContainer>
