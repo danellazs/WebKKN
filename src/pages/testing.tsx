@@ -2,10 +2,11 @@
 import Hero from "../components/hero";
 
 const Testing = () => {
+
   return (
-    <div>
+    <main>
       <Hero />
-    </div>
+    </main>
   );
 };
 

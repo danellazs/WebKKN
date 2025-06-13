@@ -3,6 +3,7 @@ import pasir from "../assets/pasir.png";
 import ombak1 from "../assets/ombak1.png";
 import ombak2 from "../assets/ombak2.png";
 import ombak3 from "../assets/ombaktes.png";
+import SlidingImage from "./slidingImage";
 
 const Hero: React.FC = () => {
   const [scrollOffset, setScrollOffset] = useState(0);
@@ -21,7 +22,8 @@ const Hero: React.FC = () => {
 
   const ombak1Move = Math.min(scrollOffset * 0.3, 60);
   const ombak2Move = Math.min(scrollOffset * 0.2, 50);  
-  const ombak3Move = Math.min(scrollOffset * 0.1, 30);  
+  const ombak3Move = Math.min(scrollOffset * 0.1, 30); 
+
 
 
   return (
@@ -31,7 +33,6 @@ const Hero: React.FC = () => {
       style={{
         position: "relative",
         overflow: "visible",
-        aspectRatio: "638 / 1000",
         width: "100%",
       }}
     >
@@ -89,15 +90,14 @@ const Hero: React.FC = () => {
           transform: `translateY(-${ombak3Move}px)`,
         }}
       />
-
-      <div className="hero-overlay" />
-      <div className="hero-text">
-        <h1>
-          Menjejak Asa
-          <br />
-          di Ekor Borneo
-        </h1>
+      <div className="hero-content">
+        <div className="hero-overlay" />
+        <div className="hero-text">
+          <h1>Menjejak Asa<br />di Ekor Borneo</h1>
+        </div>
       </div>
+
+          <SlidingImage />
     </section>
   );
 };
