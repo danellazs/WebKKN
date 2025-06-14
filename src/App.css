@@ -5,6 +5,11 @@
   height: auto;
 }
 
+html{
+  overflow-x: hidden;
+}
+
+
 .logo {
   height: 6em;
   padding: 1.5em;
@@ -483,7 +488,7 @@ nav .nav-container {
   width: 100%;
   max-width: none; /* Remove max-width constraint */
   margin: 0;
-  padding: 0 2rem;
+  padding: 0;
   box-sizing: border-box;
   min-height: inherit;
 }
@@ -541,7 +546,7 @@ nav .nav-container {
   .nav-container {
     flex-direction: column;
     align-items: flex-start;
-    padding: 0 1rem; /* Reduce padding on mobile */
+    padding: 0; /* Reduce padding on mobile */
   }
 
   .nav-links {
@@ -649,7 +654,7 @@ nav ul li:hover::after {
 
 /* Container & Page Layout */
 .container {
-  max-width: 100%;
+  max-width: 100vw;
   margin: 0;
   display: flex;
   align-items: center;
@@ -661,8 +666,9 @@ nav ul li:hover::after {
 }
 
 .page-content {
-  min-height: 100vh;
-  min-width: 100vw;
+  width: 100vw;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
 }
 
 .hero-section {
@@ -677,6 +683,8 @@ nav ul li:hover::after {
   justify-content: center;
   position: relative;
   overflow-y: visible;
+  margin-left: 0;
+  margin-right: 0;
 }
 
 .hero-content {
@@ -694,8 +702,8 @@ nav ul li:hover::after {
 
 
 .hero-overlay {
-  width: 100%;
-  height: 100%; /* black with 50% opacity */
+  width: 100vw;
+  height: 100vh; /* black with 50% opacity */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1207,7 +1215,6 @@ nav ul li:hover::after {
   width: 100%;
   max-width: 700px; /* or 800px, adjust as needed */
   margin: 0 auto;
-  padding: 1rem;
   box-sizing: border-box;
   
 }
