@@ -19,8 +19,24 @@ const ZoomIsland: React.FC = () => {
     }
   };
 
+  
+
   return (
     <div style={{ width: "100%", paddingTop: "5vw" }}>
+      <p
+        style={{
+          textAlign: "center",
+          fontSize: "0.85rem",
+          color: "#555",
+          marginBottom: "1rem",
+          marginTop: "1rem",
+          zIndex: 10,
+          position: "relative",
+        }}
+      >
+        Anda bisa berinteraksi dengan map
+      </p>
+
       <div
         ref={containerRef}
         style={{
@@ -79,12 +95,12 @@ const ZoomIsland: React.FC = () => {
               style={{
                 position: "absolute",
                 top: "30%",
-                left: "20%",
+                left: "22%",
                 width: "5vw",
                 height: "5vw",
                 cursor: "pointer",
                 zIndex: 10,
-                backgroundColor: "rgba(255, 0, 0, 0.3)",
+                backgroundColor: "transparent",
                 borderRadius: "50%",
               }}
             />
@@ -95,13 +111,13 @@ const ZoomIsland: React.FC = () => {
               onClick={() => setActiveDescription(2)}
               style={{
                 position: "absolute",
-                top: "50%",
-                left: "60%",
+                top: "18%",
+                left: "27%",
                 width: "5vw",
                 height: "5vw",
                 cursor: "pointer",
                 zIndex: 10,
-                backgroundColor: "rgba(0, 0, 255, 0.3)",
+                backgroundColor: "transparent",
                 borderRadius: "50%",
               }}
             />
@@ -146,16 +162,26 @@ const ZoomIsland: React.FC = () => {
             padding: "2vw 4vw",
             fontSize: "1rem",
             lineHeight: "1.6",
-            color: "red",
+            color: "#3D5072",
             maxWidth: "800px",
             marginLeft: "auto",
             marginRight: "auto",
             zIndex: 15,
-            backgroundColor: "white",
-            borderRadius: "10px",
+            borderRadius: "0px",
           }}
         >
-          <strong>Description Area 1:</strong> Info about red hotspot — Lorem ipsum dolor sit amet.
+          
+          <div style={{fontFamily: "Bodar, sans-serif"}}>
+            <strong>Mengenai Sebubus</strong> 
+          </div>
+          <br />
+          Infosebubus Lorem ipsum dolor sit amet, 
+          consectetur adipiscing elit, sed do eiusmod tempor incididunt 
+          ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis 
+          nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
+          Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu 
+          fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+          culpa qui officia deserunt mollit anim id est laborum
         <SlidingImage />
         </div>
       )}
@@ -174,8 +200,6 @@ const ZoomIsland: React.FC = () => {
             marginLeft: "auto",
             marginRight: "auto",
             zIndex: 15,
-            backgroundColor: "white",
-            borderRadius: "10px",
           }}
         >
           <strong>Description Area 2:</strong> Info about blue hotspot — Sed ut perspiciatis unde omnis iste.

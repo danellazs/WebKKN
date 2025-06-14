@@ -45,9 +45,8 @@ const ThreeImageSection: React.FC = () => {
             borderRadius: "8px",
             overflow: "hidden",
             boxSizing: "border-box",
-            fontFamily: "Bodar, sans-serif",
+            fontFamily: "Lato, sans-serif",
             letterSpacing: "3px",     
-            fontWeight: 700,  
           }}
         >
           <div
@@ -79,8 +78,9 @@ const ThreeImageSection: React.FC = () => {
               color: "#3D5072",
               borderRadius: "50px",
               cursor: "pointer",
-              fontFamily: "Segoe UI, sans-serif",
-              fontSize: "0.8rem",
+              fontFamily: "lato, sans-serif ",
+              fontSize: "0.7rem",
+              fontWeight: 200,  
             }}
           >
             Lihat Selengkapnya

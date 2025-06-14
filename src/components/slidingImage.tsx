@@ -3,7 +3,7 @@ import React, { useState } from "react";
 const images = [
   "assets/image.png",
   "assets/image2.png",
-  "assets/image3.png",
+  "assets/image3.jpeg",
 ];
 
 const SlidingImage: React.FC = () => {
@@ -21,11 +21,11 @@ const SlidingImage: React.FC = () => {
     <div
       style={{
         position: "relative",
-        width: "70vw", // responsive width
-        height: "300px", // fixed height for cropping
+        width: "400px", // responsive width
+        height: "225px", // fixed height for cropping
         margin: "auto",
         overflow: "hidden",
-        borderRadius: "12px",
+        borderRadius: "10px",
         boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
         zIndex: 10,
       }}
@@ -34,25 +34,34 @@ const SlidingImage: React.FC = () => {
         style={{
           display: "flex",
           transition: "transform 0.5s ease-in-out",
-          transform: `translateX(-${currentSlide * 100}%)`,
-          width: `${images.length * 100}%`,
+          transform: `translateX(-${currentSlide * 400}px)`, // shift by px instead of %
+          width: `${images.length * 400}px`, // fixed total width
           height: "100%",
         }}
       >
         {images.map((img, index) => (
-          <img
+          <div
             key={index}
-            src={img}
-            alt={`Slide ${index + 1}`}
             style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
+              width: "400px",
+              height: "225px",
               flexShrink: 0,
             }}
-          />
+          >
+            <img
+              src={img}
+              alt={`Slide ${index + 1}`}
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover", // or "contain" if no cropping wanted
+                borderRadius: "10px",
+              }}
+            />
+          </div>
         ))}
       </div>
+
 
       {/* Left Arrow */}
       <button

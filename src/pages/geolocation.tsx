@@ -115,6 +115,7 @@ const Geolocation = () => {
   return (
     
     <div className="geo-container">
+      <Navbar />
       <div className="geoloc-title">
         <h1>Setiap jejak punya cerita.</h1>
         <h3>Tambahkan ceritamu hari ini.</h3>
