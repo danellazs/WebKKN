@@ -1350,3 +1350,72 @@ nav ul li:hover::after {
     opacity: 0;
   }
 }
+
+/* Wrapper utama Gacha */
+.gacha-wrapper {
+  padding-top: 4rem;
+  text-align: center;
+}
+
+/* Tombol Gacha dan Points sejajar */
+.gacha-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+/* Tombol gacha */
+.gacha-button {
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 8px;
+  background-color: #222;
+  color: white;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: bold;
+  transition: background-color 0.2s ease;
+}
+
+.gacha-button:hover {
+  background-color: #444;
+}
+
+.gacha-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Hasil gacha satu */
+.result-single {
+  margin-top: 2rem;
+}
+
+/* Grid hasil gacha banyak */
+.result-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(2, auto);
+  gap: 1rem;
+  justify-items: center;
+  margin-top: 2rem;
+  padding: 1rem;
+}
+
+/* Style untuk tiap kura-kura hasil gacha */
+.result-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 0.8rem;
+  color: #333;
+}
+
+.result-card img {
+  width: 35px;
+  height: 35px;
+  object-fit: contain;
+}
