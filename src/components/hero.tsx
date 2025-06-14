@@ -22,10 +22,9 @@ const Hero: React.FC = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
   
-const ombak1Move = Math.min(scrollOffset * 0.6, 150); // was 0.3, 60
-const ombak2Move = Math.min(scrollOffset * 0.4, 100); // was 0.2, 50
-const ombak3Move = Math.min(scrollOffset * 0.25, 80); // was 0.1, 30
-
+const ombak1Move = Math.min(scrollOffset * 0.7, 170); // was 0.6, 150
+const ombak2Move = Math.min(scrollOffset * 0.5, 120); // was 0.4, 100
+const ombak3Move = Math.min(scrollOffset * 0.3, 100); // was 0.25, 80
 
 
   return (
@@ -58,7 +57,7 @@ const ombak3Move = Math.min(scrollOffset * 0.25, 80); // was 0.1, 30
           zIndex: 1,
           position: "absolute",
           width: "100%",
-          top: "clamp(30px, 7vw, 50px)",
+          top: "clamp(90px, 12vw, 150px)",
           left: "0",
           right: "0",
           transform: `translateY(-${ombak1Move + 100}px)`,
@@ -72,7 +71,7 @@ const ombak3Move = Math.min(scrollOffset * 0.25, 80); // was 0.1, 30
           zIndex: 2,
           position: "absolute",
           width: "100%",
-          top: "clamp(60px, 9vw, 80px)",
+          top: "clamp(120px, 15vw, 200px)",
           left: "0",
           right: "0", 
           transform: `translateY(-${ombak2Move + 140}px)`,
@@ -88,7 +87,7 @@ const ombak3Move = Math.min(scrollOffset * 0.25, 80); // was 0.1, 30
           width: "100%",
           left: "0",
           right: "0", 
-          top: "clamp(300px, 70vw, 7000px)",
+          top: "clamp(400px, 80vw, 800px)",
           transform: `translateY(-${ombak3Move}px)`,
         }}
       />
