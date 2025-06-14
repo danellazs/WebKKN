@@ -4,6 +4,7 @@ import ombak1 from "../assets/ombak1.png";
 import ombak2 from "../assets/ombak2.png";
 import ombak3 from "../assets/ombaktes.png";
 import ZoomIsland from "./zoomIsland";
+import ThreeImageSection from "./trisection"; 
 
 const Hero: React.FC = () => {
   const [scrollOffset, setScrollOffset] = useState(0);
@@ -96,7 +97,7 @@ const Hero: React.FC = () => {
           <h1>Menjejak Asa<br />di Ekor Borneo</h1>
         </div>
       </div>
-
+      <ThreeImageSection />
       <ZoomIsland />
     </section>
   );

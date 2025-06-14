@@ -697,7 +697,6 @@ nav ul li:hover::after {
   height: 100%; /* atau fixed height misalnya 400px */
   padding-top: 20rem; /* opsional untuk jarak dari atas */
   max-width: 100%;
-  padding-bottom: 20rem;
 }
 
 
