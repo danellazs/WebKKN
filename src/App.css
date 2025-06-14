@@ -678,7 +678,6 @@ nav ul li:hover::after {
 .hero-section {
   
   width: 100vw;
-  min-height: 100vh;
   background-repeat: no-repeat;
   background-size: cover;
   background-position: bottom;
@@ -706,7 +705,6 @@ nav ul li:hover::after {
 
 .hero-overlay {
   width: 100vw;
-  height: 100vh; /* black with 50% opacity */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -771,18 +769,24 @@ nav ul li:hover::after {
   position: absolute;
   top: 50%;
   left: 50%;
+  transform: translate(-50%, -50%); /* true centering */
   z-index: 3;
   text-align: center;
   color: white;
   padding: 1rem;
   animation: fade-in-up 1s ease forwards;
-  
   font-family: 'BODAR', sans-serif;
+
+  width: 80vw; /* Expand the width */
+  max-width: 900px; /* Optional cap for large screens */
 }
 
 .hero-text h1 {
   font-weight: bold;
   font-size: 2rem;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
+  padding-top: 50%;
+
 }
 
 .hero-text h3 {

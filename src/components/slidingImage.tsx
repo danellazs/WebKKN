@@ -6,7 +6,13 @@ const images = [
   "assets/image3.jpeg",
 ];
 
-const SlidingImage: React.FC = () => {
+type SlidingImageProps = {
+  borderRadius?: string;
+};
+
+const SlidingImage: React.FC<SlidingImageProps> = ({ borderRadius = "10px" }) => {
+  // ...
+
   const [currentSlide, setCurrentSlide] = useState(0);
 
   const goToPrev = () => {
@@ -17,6 +23,7 @@ const SlidingImage: React.FC = () => {
     setCurrentSlide((prev) => (prev === images.length - 1 ? 0 : prev + 1));
   };
 
+  
   return (
     <div
       style={{
@@ -25,7 +32,7 @@ const SlidingImage: React.FC = () => {
         height: "225px", // fixed height for cropping
         margin: "auto",
         overflow: "hidden",
-        borderRadius: "10px",
+        borderRadius: borderRadius,
         boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
         zIndex: 10,
       }}
