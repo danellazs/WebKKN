@@ -159,7 +159,7 @@ const ZoomIsland: React.FC = () => {
           style={{
             position: "relative",
             marginTop: "6vw",
-            padding: "2vw 4vw",
+            padding: "2vw 0vw",
             fontSize: "1rem",
             lineHeight: "1.6",
             color: "#3D5072",
@@ -171,9 +171,13 @@ const ZoomIsland: React.FC = () => {
           }}
         >
           
-          <div style={{fontFamily: "Bodar, sans-serif"}}>
-            <strong>Mengenai Sebubus</strong> 
+          <div style={{fontFamily: "Bodar, sans-serif", padding: "0vw 2vw",}}>
+            <div>
+              <strong>Mengenai Sebubus</strong> 
+            </div>
           </div>
+
+          <div style={{padding: "0vw 5vw",}}>
           <br />
           Infosebubus Lorem ipsum dolor sit amet, 
           consectetur adipiscing elit, sed do eiusmod tempor incididunt 
@@ -182,8 +186,8 @@ const ZoomIsland: React.FC = () => {
           Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu 
           fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
           culpa qui officia deserunt mollit anim id est laborum
-          
-        <SlidingImage borderRadius="15px"/>
+          </div>
+        <SlidingImage borderRadius="0px"/>
         </div>
       )}
 

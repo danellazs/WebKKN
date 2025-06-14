@@ -5,6 +5,7 @@ import ombak2 from "../assets/ombak2.png";
 import ombak3 from "../assets/ombaktes.png";
 import ZoomIsland from "./zoomIsland";
 import ThreeImageSection from "./trisection"; 
+import FloraFauna from "./florafauna";
 
 const Hero: React.FC = () => {
   const [scrollOffset, setScrollOffset] = useState(0);
@@ -99,6 +100,8 @@ const Hero: React.FC = () => {
       </div>
       <ThreeImageSection />
       <ZoomIsland />
+      <FloraFauna />
+      <FloraFauna type="fauna" />
     </section>
   );
 };

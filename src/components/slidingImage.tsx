@@ -8,9 +8,18 @@ const images = [
 
 type SlidingImageProps = {
   borderRadius?: string;
+  width?: string; // contoh: "100vw", "400px", "80%"
+  height?: string; // opsional juga
 };
 
-const SlidingImage: React.FC<SlidingImageProps> = ({ borderRadius = "10px" }) => {
+
+
+
+const SlidingImage: React.FC<SlidingImageProps> = ({
+  borderRadius = "10px",
+  width = "400vw",
+  height = "225px", // default
+}) => {
   // ...
 
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -28,8 +37,8 @@ const SlidingImage: React.FC<SlidingImageProps> = ({ borderRadius = "10px" }) =>
     <div
       style={{
         position: "relative",
-        width: "400px", // responsive width
-        height: "225px", // fixed height for cropping
+        width: width,
+        height: height,
         margin: "auto",
         overflow: "hidden",
         borderRadius: borderRadius,
@@ -41,8 +50,8 @@ const SlidingImage: React.FC<SlidingImageProps> = ({ borderRadius = "10px" }) =>
         style={{
           display: "flex",
           transition: "transform 0.5s ease-in-out",
-          transform: `translateX(-${currentSlide * 400}px)`, // shift by px instead of %
-          width: `${images.length * 400}px`, // fixed total width
+          transform: `translateX(-${currentSlide * 100}%)`, // shift by px instead of %
+          width: `${images.length * 100}%`, // fixed total width
           height: "100%",
         }}
       >
@@ -50,9 +59,10 @@ const SlidingImage: React.FC<SlidingImageProps> = ({ borderRadius = "10px" }) =>
           <div
             key={index}
             style={{
-              width: "400px",
+              width: "100%",
               height: "225px",
               flexShrink: 0,
+              flexBasis: "100%",
             }}
           >
             <img
@@ -62,7 +72,7 @@ const SlidingImage: React.FC<SlidingImageProps> = ({ borderRadius = "10px" }) =>
                 width: "100%",
                 height: "100%",
                 objectFit: "cover", // or "contain" if no cropping wanted
-                borderRadius: "10px",
+                borderRadius: "0px",
               }}
             />
           </div>
