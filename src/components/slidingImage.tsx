@@ -8,20 +8,13 @@ const images = [
 
 type SlidingImageProps = {
   borderRadius?: string;
-  width?: string; // contoh: "100vw", "400px", "80%"
-  height?: string; // opsional juga
+  width?: string; // e.g., "100vw", "600px", "80%"
 };
-
-
-
 
 const SlidingImage: React.FC<SlidingImageProps> = ({
   borderRadius = "10px",
-  width = "400vw",
-  height = "225px", // default
+  width = "100vw", // default
 }) => {
-  // ...
-
   const [currentSlide, setCurrentSlide] = useState(0);
 
   const goToPrev = () => {
@@ -32,16 +25,15 @@ const SlidingImage: React.FC<SlidingImageProps> = ({
     setCurrentSlide((prev) => (prev === images.length - 1 ? 0 : prev + 1));
   };
 
-  
   return (
     <div
       style={{
         position: "relative",
         width: width,
-        height: height,
+        aspectRatio: "16 / 9", // maintain 16:9 ratio
         margin: "auto",
         overflow: "hidden",
-        borderRadius: borderRadius,
+        borderRadius,
         boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
         zIndex: 10,
       }}
@@ -50,8 +42,8 @@ const SlidingImage: React.FC<SlidingImageProps> = ({
         style={{
           display: "flex",
           transition: "transform 0.5s ease-in-out",
-          transform: `translateX(-${currentSlide * 100}%)`, // shift by px instead of %
-          width: `${images.length * 100}%`, // fixed total width
+          transform: `translateX(-${currentSlide * (100 / images.length)}%)`,
+          width: `${images.length * 100}%`,
           height: "100%",
         }}
       >
@@ -59,10 +51,9 @@ const SlidingImage: React.FC<SlidingImageProps> = ({
           <div
             key={index}
             style={{
-              width: "100%",
-              height: "225px",
+              width: `${100 / images.length}%`,
+              height: "100%",
               flexShrink: 0,
-              flexBasis: "100%",
             }}
           >
             <img
@@ -71,14 +62,13 @@ const SlidingImage: React.FC<SlidingImageProps> = ({
               style={{
                 width: "100%",
                 height: "100%",
-                objectFit: "cover", // or "contain" if no cropping wanted
+                objectFit: "cover",
                 borderRadius: "0px",
               }}
             />
           </div>
         ))}
       </div>
-
 
       {/* Left Arrow */}
       <button
@@ -91,7 +81,8 @@ const SlidingImage: React.FC<SlidingImageProps> = ({
           background: "transparent",
           border: "none",
           cursor: "pointer",
-          padding: "0",
+          padding: 0,
+          filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.5))",
         }}
       >
         <img
@@ -112,7 +103,8 @@ const SlidingImage: React.FC<SlidingImageProps> = ({
           background: "transparent",
           border: "none",
           cursor: "pointer",
-          padding: "0",
+          padding: 0,
+          filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.5))",
         }}
       >
         <img
