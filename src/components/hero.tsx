@@ -3,7 +3,6 @@ import pasir from "../assets/pasir.png";
 import ombak1 from "../assets/ombak1.png";
 import ombak2 from "../assets/ombak2.png";
 import ombak3 from "../assets/ombaktes.png";
-import SlidingImage from "./slidingImage";
 import ZoomIsland from "./zoomIsland";
 
 const Hero: React.FC = () => {
@@ -98,7 +97,6 @@ const Hero: React.FC = () => {
         </div>
       </div>
 
-          <SlidingImage />
           <ZoomIsland />
     </section>
   );

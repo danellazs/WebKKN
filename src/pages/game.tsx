@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import ScrollQuiz from "../components/quizScroll";
 import botol1 from "../assets/botol1.png";
 import botol2 from "../assets/botol2.png";
