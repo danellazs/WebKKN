@@ -46,7 +46,7 @@ const FloraFauna: React.FC<FloraFaunaProps> = ({ type = "flora" }) => {
         backgroundImage: "url('assets/sectionbg2.png')",
         backgroundSize: "cover",
         backgroundPosition: "center",
-        padding: "5rem 1rem 1rem 1rem",
+        padding: "4rem 1rem 1rem 1rem",
         aspectRatio: "1440 / 1900",
         display: "flex",
         flexDirection: "column",
