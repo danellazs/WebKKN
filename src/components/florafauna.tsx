@@ -43,19 +43,33 @@ const FloraFauna: React.FC<FloraFaunaProps> = ({ type = "flora" }) => {
   return (
     <div
       style={{
-        backgroundImage: "url('/assets/sectionbg.png')",
+        backgroundImage: "url('assets/sectionbg2.png')",
         backgroundSize: "cover",
         backgroundPosition: "center",
-        padding: "1rem 1rem",
+        padding: "5rem 1rem 1rem 1rem",
+        aspectRatio: "1440 / 1900",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         gap: "2rem",
         zIndex: 20,
-        minHeight: "400px",
+        width: "100%", 
         position: "relative",
       }}
     >
+      {/* TITLE HEADER */}
+      <h1
+        style={{
+          fontSize: "2rem",
+          color: "#3D5072",
+          fontFamily: "Bodar, sans-serif",
+          textAlign: "center",
+          margin: 0,
+        }}
+      >
+        {type === "flora" ? "FLORA" : "FAUNA"}
+      </h1>
+
       {/* Top cluster: arrows, image, and title */}
         <div
         style={{
@@ -67,11 +81,10 @@ const FloraFauna: React.FC<FloraFaunaProps> = ({ type = "flora" }) => {
             height: "300px",
             position: "relative",
             justifyContent: "center",
-            flexDirection: isReversed ? "row-reverse" : "row",
         }}
         >
         {/* Left Arrow */}
-        <div style={{ padding: "0.25rem" }}>
+        <div>
             <button
             onClick={prev}
             style={{
@@ -89,6 +102,16 @@ const FloraFauna: React.FC<FloraFaunaProps> = ({ type = "flora" }) => {
             />
             </button>
         </div>
+
+         <div
+            style={{
+            display: "flex",
+            flexDirection: isReversed ? "row-reverse" : "row",
+            alignItems: "center",
+            gap: "1rem",
+            flex: 1,
+            }}
+        >
 
         {/* Image */}
         <div
@@ -129,7 +152,7 @@ const FloraFauna: React.FC<FloraFaunaProps> = ({ type = "flora" }) => {
             <h2
             style={{
                 fontFamily: "Lato, sans-serif",
-                fontSize: "clamp(2rem, 2.5vw, 1.5rem)",
+                fontSize: "clamp(1.5rem, 2.5vw, 1.2rem)",
                 color: "#fff",
                 textAlign: "center",
                 textShadow: "1px 1px 4px rgba(0,0,0,0.6)",
@@ -140,9 +163,10 @@ const FloraFauna: React.FC<FloraFaunaProps> = ({ type = "flora" }) => {
             {floraFaunaItems[current].title}
             </h2>
         </div>
+        </div>
 
         {/* Right Arrow */}
-        <div style={{ padding: "0.25rem" }}>
+        <div>
             <button
             onClick={next}
             style={{
@@ -175,6 +199,7 @@ const FloraFauna: React.FC<FloraFaunaProps> = ({ type = "flora" }) => {
             fontFamily: "Lato, sans-serif",
             fontSize: "1rem",
             color: "#3D5072",
+            fontWeight: 400,
           }}
         >
           {floraFaunaItems[current].description}
