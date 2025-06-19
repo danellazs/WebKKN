@@ -105,7 +105,7 @@ const Game = () => {
     }
 
     // Insert new generation row
-    const { data: insertData, error: insertError } = await supabase
+    const {error: insertError } = await supabase
       .from("question_generations")
       .insert({
         user_id: session.user.id
