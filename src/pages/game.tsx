@@ -1,4 +1,3 @@
-// src/pages/Game.tsx (atau sesuai lokasi file kamu)
 import { useState, useEffect, useContext } from "react";
 import ScrollQuiz from "../components/quizScroll";
 import botol1 from "../assets/botol1.png";
@@ -8,7 +7,6 @@ import Gacha from "../components/gacha";
 import { supabase } from "../supabase-client";
 import { SessionContext } from "../context/sessionContext";
 import { Button } from "../components/ui/button";
-import Background from "../assets/ombak1.png";
 
 const getRandomPosition = () => ({
   top: Math.floor(Math.random() * 80) + 10,
@@ -25,7 +23,7 @@ const getRandomRotation = () => Math.floor(Math.random() * 360);
 const Game = () => {
   const [scrollQuizVisible, setScrollQuizVisible] = useState(false);
   const [botolButtons, setBotolButtons] = useState<
-    { id: number; top: number; left: number; image: string; rotation: number }[]
+    { id: string; top: number; left: number; image: string; rotation: number }[]
   >([]);
 
   const session = useContext(SessionContext);
@@ -51,20 +49,95 @@ const Game = () => {
     fetchPoints();
   }, [session]);
 
-  const handleGenerateQuiz = () => {
-    const newId = Date.now(); // unique id
-    const newBotol = {
-      id: newId,
+  const fetchBotols = async () => {
+    if (!session) return;
+    const threeDaysAgo = new Date();
+    threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
+
+    const { data, error } = await supabase
+      .from("question_generations")
+      .select("*")
+      .eq("user_id", session.user.id)
+      .eq("is_opened", false)
+      .gte("generated_at", threeDaysAgo.toISOString());
+
+    if (error) {
+      console.error("Gagal mengambil botol:", error.message);
+      return;
+    }
+
+    // Convert fetched data into botolButtons state
+    const newBotols = data.map((item: any) => ({
+      id: item.id,
       ...getRandomPosition(),
       image: getRandomBotol(),
       rotation: getRandomRotation()
-    };
-    setBotolButtons((prev) => [...prev, newBotol]);
+    }));
+
+    setBotolButtons(newBotols);
   };
 
-  const clearAllBotols = () => {
-    setBotolButtons([]);
-    localStorage.removeItem("botolButtons");
+  useEffect(() => {
+    fetchBotols();
+  }, [session]);
+
+  const handleGenerateQuiz = async () => {
+    if (!session) return;
+
+    // Cek apakah user sudah generate hari ini
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // start of today
+
+    const { data: existing, error: checkError } = await supabase
+      .from("question_generations")
+      .select("*")
+      .eq("user_id", session.user.id)
+      .gte("generated_at", today.toISOString());
+
+    if (checkError) {
+      console.error("Gagal mengecek generate hari ini:", checkError.message);
+      return;
+    }
+
+    if (existing && existing.length > 0) {
+      alert("Kamu sudah generate quiz hari ini! Coba lagi besok.");
+      return;
+    }
+
+    // Insert new generation row
+    const { data: insertData, error: insertError } = await supabase
+      .from("question_generations")
+      .insert({
+        user_id: session.user.id
+      })
+      .select();
+
+    if (insertError) {
+      console.error("Gagal generate quiz:", insertError.message);
+      return;
+    }
+
+    // Refresh bottles
+    await fetchBotols();
+  };
+
+  const clearAllBotols = async () => {
+    if (!session) return;
+
+    // Option: set is_opened = true untuk semua botol user yang belum dibuka
+    const { error } = await supabase
+      .from("question_generations")
+      .update({ is_opened: true })
+      .eq("user_id", session.user.id)
+      .eq("is_opened", false);
+
+    if (error) {
+      console.error("Gagal menghapus botol:", error.message);
+      return;
+    }
+
+    // Refresh bottles
+    await fetchBotols();
   };
 
   const openScrollQuiz = () => setScrollQuizVisible(true);
@@ -74,18 +147,17 @@ const Game = () => {
     <div className="game-container">
       {/* Komponen Gacha */}
       <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        minHeight: "80vh",
-        position: "relative"
-      }}
-    >
-      <Gacha points={points} refreshPoints={fetchPoints} />
-      
-      
-    </div>
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          minHeight: "80vh",
+          position: "relative"
+        }}
+      >
+        <Gacha points={points} refreshPoints={fetchPoints} />
+      </div>
+
       {/* Tombol Generate Quiz */}
       <Button
         onClick={handleGenerateQuiz}
