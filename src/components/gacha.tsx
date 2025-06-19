@@ -4,6 +4,7 @@ import { SessionContext } from "../context/sessionContext";
 import type { Pet } from "../types/pet";
 import PetPool from "./petPool";
 import PointsDisplay from "./pointDisplay";
+import { Button } from "./ui/button";
 
 const Gacha = ({ points, refreshPoints }: { points: number; refreshPoints: () => void }) => {
   const session = useContext(SessionContext);
@@ -148,13 +149,13 @@ const Gacha = ({ points, refreshPoints }: { points: number; refreshPoints: () =>
       <div className="gacha-header">
         <PointsDisplay />
         <div>
-          <button className="gacha-button" onClick={handleGacha} disabled={loading} style={{ marginBottom: "0.5rem" }}>
-            {loading ? "Sedang gacha..." : `Gacha (Harga: ${GACHA_COST} points)`}
-          </button>
+          <Button className="gacha-button" onClick={handleGacha} disabled={loading} style={{ marginBottom: "0.5rem" }}>
+            {loading ? "Sedang gacha..." : `Gacha (Harga: ${GACHA_COST} ⚪)`}
+          </Button>
           <br />
-          <button className="gacha-button" onClick={handleGacha10} disabled={loading}>
-            {loading ? "Sedang gacha..." : `Gacha 10x (Harga: ${GACHA10_COST} points)`}
-          </button>
+          <Button className="gacha-button" onClick={handleGacha10} disabled={loading}>
+            {loading ? "Sedang gacha..." : `Gacha 10x (Harga: ${GACHA10_COST} ⚪)`}
+          </Button>
         </div>
       </div>
 

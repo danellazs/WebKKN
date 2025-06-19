@@ -11,7 +11,7 @@ const PetPool = ({ userPets, allPets }: { userPets: Pet[]; allPets: Pet[] }) => 
 
   return (
     <div className="pet-container">
-      <h3>Kolam wkwk</h3>
+      <h3>Kolam kamu</h3>
 
       <div className="pet-pool">
         {userPets.map((pet) => (

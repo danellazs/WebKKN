@@ -7,6 +7,8 @@ import botol3 from "../assets/botol3.png";
 import Gacha from "../components/gacha";
 import { supabase } from "../supabase-client";
 import { SessionContext } from "../context/sessionContext";
+import { Button } from "../components/ui/button";
+import Background from "../assets/ombak1.png";
 
 const getRandomPosition = () => ({
   top: Math.floor(Math.random() * 80) + 10,
@@ -69,7 +71,7 @@ const Game = () => {
   const closeScrollQuiz = () => setScrollQuizVisible(false);
 
   return (
-    <div style={{ position: "relative", minHeight: "100vh" }}>
+    <div className="game-container">
       {/* Komponen Gacha */}
       <div
       style={{
@@ -85,7 +87,7 @@ const Game = () => {
       
     </div>
       {/* Tombol Generate Quiz */}
-      <button
+      <Button
         onClick={handleGenerateQuiz}
         style={{
           position: "fixed",
@@ -103,10 +105,10 @@ const Game = () => {
         }}
       >
         Generate Daily Quiz
-      </button>
+      </Button>
 
       {/* Tombol Clear */}
-      <button
+      <Button
         onClick={clearAllBotols}
         style={{
           position: "fixed",
@@ -125,7 +127,7 @@ const Game = () => {
         }}
       >
         Hapus Semua Botol
-      </button>
+      </Button>
 
       {/* Tampilkan Botol */}
       {botolButtons.map((botol) => (
