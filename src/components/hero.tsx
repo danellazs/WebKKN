@@ -100,7 +100,7 @@ const ombak3Move = Math.min(scrollOffset * 0.3, 100); // was 0.25, 80
       <ThreeImageSection />
       <ZoomIsland />
       <FloraFauna />
-      <FloraFauna type="fauna" />
+      <FloraFauna />
     </section>
   );
 };

@@ -38,8 +38,6 @@ const FloraFauna: React.FC<FloraFaunaProps> = ({ type = "flora" }) => {
     );
   };
 
-  const isReversed = type === "fauna";
-
   return (
     <div
       style={{
@@ -106,7 +104,7 @@ const FloraFauna: React.FC<FloraFaunaProps> = ({ type = "flora" }) => {
          <div
             style={{
             display: "flex",
-            flexDirection: isReversed ? "row-reverse" : "row",
+            flexDirection: "column",
             alignItems: "center",
             gap: "1rem",
             flex: 1,
@@ -116,14 +114,14 @@ const FloraFauna: React.FC<FloraFaunaProps> = ({ type = "flora" }) => {
         {/* Image */}
         <div
             style={{
-            aspectRatio: "9 / 16",
+            aspectRatio: "1 / 1",
             maxHeight: "100%",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
             backgroundColor: "#000",
             flexShrink: 0,
-            width: "160px", // fix agar gambar tidak terdorong
+            maxWidth: "300px", // fix agar gambar tidak terdorong
             }}
         >
             <img
@@ -132,7 +130,7 @@ const FloraFauna: React.FC<FloraFaunaProps> = ({ type = "flora" }) => {
             style={{
                 width: "100%",
                 height: "100%",
-                objectFit: "contain",
+                objectFit: "cover",
                 boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
             }}
             />
@@ -197,7 +195,7 @@ const FloraFauna: React.FC<FloraFaunaProps> = ({ type = "flora" }) => {
         <p
           style={{
             fontFamily: "Lato, sans-serif",
-            fontSize: "1rem",
+            fontSize: "clamp(0.85rem, 2vw, 1rem)",
             color: "#3D5072",
             fontWeight: 400,
           }}
