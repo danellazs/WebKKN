@@ -9,7 +9,6 @@ import StoryForm from "../components/storyForm";
 import StoryMap from "../components/mapping";
 import ConversationPanel from "../components/conversationPanel";
 import LocalVerificationButton from "../components/localVerification";
-import Navbar from "../components/navbar";
 
 
 import type { Story } from "../types/story";
@@ -115,7 +114,6 @@ const Geolocation = () => {
   return (
     
     <div className="geo-container">
-      <Navbar />
       <div className="geoloc-title">
         <h1>Setiap jejak punya cerita.</h1>
         <h3>Tambahkan ceritamu hari ini.</h3>
@@ -151,7 +149,11 @@ const Geolocation = () => {
         center={fixedCenter}
         zoom={13}
         scrollWheelZoom={false}
-        style={{ height: "500px", width: "100%" }}
+        style={{
+          height: "500px",
+          width: "75%",
+          margin: "2rem auto",
+        }}
       >
         <TileLayer
           url={`https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=${MAPTILER_KEY}`}
