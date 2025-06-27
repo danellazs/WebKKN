@@ -65,7 +65,6 @@ const PointsDisplay = ({ refreshTrigger, onDeduct }: PointDisplayProps) => {
 
   return (
     <div className="points-container">
-      <h3 className="points-title">Pearl Kamu</h3>
       <div className="points-score-box">
         {loading
           ? "Loading..."

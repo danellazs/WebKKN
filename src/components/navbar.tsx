@@ -1,17 +1,19 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { supabase } from "../supabase-client";
 import { Auth } from "./auth";
 
+const isTouchDevice = () => {
+  return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+};
+
 const Navbar = () => {
   const [session, setSession] = useState<any>(null);
   const [showAuth, setShowAuth] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false); // This is the toggle state
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navigate = useNavigate(); 
 
-  // Toggle menu open/close
   const toggleMenu = () => setIsMenuOpen((prev) => !prev);
-
-  // Close menu when a link is clicked (optional)
   const closeMenu = () => setIsMenuOpen(false);
 
   useEffect(() => {
@@ -37,7 +39,14 @@ const Navbar = () => {
   const logout = async () => {
     await supabase.auth.signOut();
     setSession(null);
-    closeMenu(); // Optional: close menu on logout
+    closeMenu();
+  };
+
+  const handleTouchLink = (path: string) => {
+    setTimeout(() => {
+      navigate(path);
+      closeMenu();
+    }, 300); 
   };
 
   return (
@@ -54,13 +63,40 @@ const Navbar = () => {
 
         <ul className={`nav-links ${isMenuOpen ? "open" : ""}`}>
           <li>
-            <Link to="/testing" onClick={closeMenu}>Testing yak</Link>
+            {isTouchDevice() ? (
+              <button
+                className="nav-touch-link"
+                onTouchStart={() => handleTouchLink('/testing')}
+              >
+                Testing yak
+              </button>
+            ) : (
+              <Link to="/testing" onClick={closeMenu}>Testing yak</Link>
+            )}
           </li>
           <li>
-            <Link to="/geolocation" onClick={closeMenu}>Geoloc</Link>
+            {isTouchDevice() ? (
+              <button
+                className="nav-touch-link"
+                onTouchStart={() => handleTouchLink('/geolocation')}
+              >
+                Geoloc
+              </button>
+            ) : (
+              <Link to="/geolocation" onClick={closeMenu}>Geoloc</Link>
+            )}
           </li>
           <li>
-            <Link to="/game" onClick={closeMenu}>Game</Link>
+            {isTouchDevice() ? (
+              <button
+                className="nav-touch-link"
+                onTouchStart={() => handleTouchLink('/game')}
+              >
+                Game
+              </button>
+            ) : (
+              <Link to="/game" onClick={closeMenu}>Game</Link>
+            )}
           </li>
           <li className="auth-button">
             {session ? (
