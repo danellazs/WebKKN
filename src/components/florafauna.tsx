@@ -45,7 +45,7 @@ const FloraFauna: React.FC<FloraFaunaProps> = ({ type = "flora" }) => {
         backgroundSize: "cover",
         backgroundPosition: "center",
         padding: "4rem 1rem 1rem 1rem",
-        aspectRatio: "1440 / 1900",
+        // aspectRatio: "1440 / 1900",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -53,6 +53,7 @@ const FloraFauna: React.FC<FloraFaunaProps> = ({ type = "flora" }) => {
         zIndex: 20,
         width: "100%", 
         position: "relative",
+        minHeight: "100vh",
       }}
     >
       {/* TITLE HEADER */}
