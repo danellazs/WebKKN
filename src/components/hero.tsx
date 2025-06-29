@@ -10,6 +10,9 @@ import FloraFauna from "./florafauna";
 const Hero: React.FC = () => {
   const [scrollOffset, setScrollOffset] = useState(0);
   const imageRef = useRef<HTMLImageElement>(null);
+  const lokasiRef = useRef<HTMLDivElement>(null);
+  const floraRef = useRef<HTMLDivElement>(null);
+  const faunaRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -97,10 +100,25 @@ const ombak3Move = Math.min(scrollOffset * 0.3, 100); // was 0.25, 80
           <h1>Menjejak Asa<br />di Ekor Borneo</h1>
         </div>
       </div>
-      <ThreeImageSection />
-      <ZoomIsland />
-      <FloraFauna />
-      <FloraFauna />
+      <ThreeImageSection
+        onScroll={(section) => {
+          if (section === "LOKASI") lokasiRef.current?.scrollIntoView({ behavior: "smooth" });
+          else if (section === "FLORA") floraRef.current?.scrollIntoView({ behavior: "smooth" });
+          else if (section === "FAUNA") faunaRef.current?.scrollIntoView({ behavior: "smooth" });
+        }}
+      />
+
+      <div ref={lokasiRef}>
+        <ZoomIsland />
+      </div>
+
+      <div ref={floraRef}>
+        <FloraFauna type="flora" />
+      </div>
+
+      <div ref={faunaRef}>
+        <FloraFauna type="fauna" />
+      </div>
     </section>
   );
 };

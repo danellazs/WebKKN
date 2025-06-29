@@ -1449,7 +1449,7 @@ nav ul li:hover::after {
 .game-container {
   position: relative;
   min-height: 100vh;
-  background-image: url('/src/assets/ombak1.png');
+  background-image:  url('/assets/ombaklatar.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

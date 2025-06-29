@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from "react";
 
-const ThreeImageSection: React.FC = () => {
+type Props = {
+  onScroll: (section: "LOKASI" | "FLORA" | "FAUNA") => void;
+};
+
+const ThreeImageSection: React.FC<Props> = ({ onScroll }) => {
   const items = [
     {
       title: "LOKASI",
@@ -109,6 +113,8 @@ const ThreeImageSection: React.FC = () => {
                 fontSize: "0.7rem",
                 fontWeight: 200,
               }}
+
+              onClick={() => onScroll(item.title as "LOKASI" | "FLORA" | "FAUNA")}
             >
               Lihat Selengkapnya
             </button>
