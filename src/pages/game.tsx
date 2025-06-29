@@ -166,14 +166,14 @@ const Game = () => {
           bottom: "30px",
           right: "30px",
           backgroundColor: "#f0c674",
-          border: "2px solid #8b4513",
           borderRadius: "15px",
           padding: "15px 25px",
           fontSize: "16px",
-          fontWeight: "bold",
           cursor: "pointer",
           boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-          zIndex: 1000
+          zIndex: 1000,
+          width: "35vw", 
+          maxWidth: "300px"   
         }}
       >
         Generate Daily Quiz
@@ -187,15 +187,16 @@ const Game = () => {
           bottom: "30px",
           left: "30px",
           backgroundColor: "#ff6b6b",
-          border: "2px solid #8b0000",
           borderRadius: "15px",
           padding: "10px 20px",
-          fontSize: "14px",
-          fontWeight: "bold",
+          fontSize: "16px",
           color: "white",
           cursor: "pointer",
           boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-          zIndex: 1000
+          zIndex: 1000,
+          width: "35vw", 
+          maxWidth: "300px" 
+
         }}
       >
         Hapus Semua Botol

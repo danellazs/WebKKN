@@ -25,8 +25,8 @@ const Geolocation = () => {
     lng: number;
     timestamp: number;
   }>({
-    lat: -7.76162,
-    lng: 110.37717,
+    lat: 2.0815,
+    lng: 109.6251,
     timestamp: Date.now(),
   });
 
@@ -116,8 +116,14 @@ const Geolocation = () => {
     <div className="geo-container">
       <div className="geoloc-title">
         <h1>Setiap jejak punya cerita.</h1>
-        <h3>Tambahkan ceritamu hari ini.</h3>
+        <div style={{
+            fontFamily: "Lato, sans-serif", 
+            padding: "0vw 2vw", 
+            letterSpacing: "2px",
+            fontStyle: "italic"}}>
+            <div>Tambahkan ceritamu hari ini.</div>
       </div>
+    </div>
 
       <button onClick={() => setShowForm(true)} className="open-form-button">
         ➕ Tambah Cerita
