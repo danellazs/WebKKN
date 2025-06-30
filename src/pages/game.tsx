@@ -144,14 +144,26 @@ const Game = () => {
   const closeScrollQuiz = () => setScrollQuizVisible(false);
 
   return (
+
     <div className="game-container">
+      <div className="geoloc-title">
+        <h1>Siap Bermain?</h1>
+        <div style={{
+            fontFamily: "Lato, sans-serif", 
+            padding: "0vw 2vw", 
+            letterSpacing: "2px",
+            fontStyle: "italic"}}>
+            <div>Mulai petualanganmu di Borneo. Kumpulkan poin, temukan hewan langka, dan ciptakan kenangan.</div>
+      </div>
+      </div>
+
       {/* Komponen Gacha */}
       <div
         style={{
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          minHeight: "80vh",
+          minHeight: "50vh",
           position: "relative"
         }}
       >
