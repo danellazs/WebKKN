@@ -1454,3 +1454,39 @@ nav ul li:hover::after {
   background-position: center;
   background-repeat: no-repeat;
 }
+
+.user-info-container {
+  background-color: #BFA887;
+  padding: 0.3rem;
+  border-radius: 40px;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  position: relative;
+  max-width: fit-content;
+}
+
+.name-badge {
+  background-color: #BFA887;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 40px;
+  font-weight: bold;
+  font-size: 0.9rem;
+  position: absolute;
+  top: 0rem;
+  left: 0rem;
+  z-index: 2;
+}
+
+.points-badge {
+  background-color: #A28564;
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: bold;
+  border-radius: 40px;
+  padding: 0rem 0.5rem 0.5rem 7rem;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}

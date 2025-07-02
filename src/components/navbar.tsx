@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { supabase } from "../supabase-client";
+import UserInfoDisplay from "./userInfoDisplay";
 import { Auth } from "./auth";
 
 const isTouchDevice = () => {
@@ -107,7 +108,9 @@ const Navbar = () => {
               </button>
             )}
           </li>
+          <UserInfoDisplay />
         </ul>
+        
       </div>
 
       {showAuth && (
