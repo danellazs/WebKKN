@@ -1457,7 +1457,7 @@ nav ul li:hover::after {
 
 .user-info-container {
   background-color: #BFA887;
-  padding: 0.3rem;
+  padding: 0rem;
   border-radius: 40px;
   display: flex;
   align-items: flex-start;
@@ -1468,7 +1468,6 @@ nav ul li:hover::after {
 
 .name-badge {
   background-color: #BFA887;
-  color: #fff;
   padding: 0.5rem 1rem;
   border-radius: 40px;
   font-weight: bold;
@@ -1481,11 +1480,10 @@ nav ul li:hover::after {
 
 .points-badge {
   background-color: #A28564;
-  color: #fff;
   font-size: 0.9rem;
   font-weight: bold;
   border-radius: 40px;
-  padding: 0rem 0.5rem 0.5rem 7rem;
+  padding: 0.5rem 0.5rem 0.5rem 6.5rem;
   width: 100%;
   display: flex;
   align-items: center;
