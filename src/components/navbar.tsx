@@ -67,18 +67,6 @@ const Navbar = () => {
             {isTouchDevice() ? (
               <button
                 className="nav-touch-link"
-                onTouchStart={() => handleTouchLink('/testing')}
-              >
-                Testing yak
-              </button>
-            ) : (
-              <Link to="/testing" onClick={closeMenu}>Testing yak</Link>
-            )}
-          </li>
-          <li>
-            {isTouchDevice() ? (
-              <button
-                className="nav-touch-link"
                 onTouchStart={() => handleTouchLink('/geolocation')}
               >
                 Geoloc

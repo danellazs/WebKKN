@@ -6,9 +6,9 @@ import Navbar from "./components/navbar";
 import { supabase } from "./supabase-client";
 import { SessionContext } from "./context/sessionContext";
 import Geolocation from "./pages/geolocation";
-import Testing from "./pages/testing";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Game from "./pages/game";
+import Hero from "./components/hero";
 
 function App() {
   const [session, setSession] = useState<any>(null);
@@ -39,9 +39,11 @@ function App() {
           <div className="page-content">
           <Routes>
             <Route path="/geolocation" element={<Geolocation />} />
-            <Route path="/testing" element={<Testing />} />
             <Route path="/game" element={<Game />} />
           </Routes>
+          </div>
+           <div>
+            <Hero />
           </div>
         </div>
       </SessionContext.Provider>

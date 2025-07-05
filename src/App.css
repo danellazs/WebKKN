@@ -570,16 +570,17 @@ nav .nav-container {
   .nav-links.open {
     display: flex;
     flex-direction: column;
+    padding: 0.5rem;
   }
 
   .nav-links li {
     width: 100%;
+    margin: 0rem 0rem;
   }
 
   .nav-links li a {
     display: block;
     width: 100%;
-    padding: 0.75rem 1rem;
     text-align: left;
   }
 
@@ -1460,10 +1461,11 @@ nav ul li:hover::after {
   padding: 0rem;
   border-radius: 40px;
   display: flex;
-  align-items: flex-start;
+  align-items: center; /* ganti dari flex-start */
   gap: 0.5rem;
   position: relative;
   max-width: fit-content;
+  margin-bottom: 1rem;
 }
 
 .name-badge {
@@ -1472,10 +1474,9 @@ nav ul li:hover::after {
   border-radius: 40px;
   font-weight: bold;
   font-size: 0.9rem;
-  position: absolute;
-  top: 0rem;
-  left: 0rem;
+  position: relative; /* Hapus absolute */
   z-index: 2;
+  white-space: nowrap;
 }
 
 .points-badge {
@@ -1483,8 +1484,18 @@ nav ul li:hover::after {
   font-size: 0.9rem;
   font-weight: bold;
   border-radius: 40px;
-  padding: 0.5rem 0.5rem 0.5rem 6.5rem;
-  width: 100%;
+  padding: 0.5rem 1rem;
   display: flex;
   align-items: center;
+  white-space: nowrap;
+}
+
+.auth-button {
+  margin: 1rem 0;
+  padding: 0.75rem 1.5rem;
+  color: #0077be;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
 }

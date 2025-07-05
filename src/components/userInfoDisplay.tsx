@@ -24,7 +24,7 @@ const UserInfoDisplay = () => {
         .eq("id", session.user.id)
         .single();
 
-      setName(userData?.name || "Pengguna");
+      setName(userData?.name || "User tidak login");
 
       const { data: pointsData } = await supabase
         .from("points")
