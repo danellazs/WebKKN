@@ -37,13 +37,11 @@ function App() {
         <div className="nav-container">
           <Navbar />
           <div className="page-content">
-          <Routes>
-            <Route path="/geolocation" element={<Geolocation />} />
-            <Route path="/game" element={<Game />} />
-          </Routes>
-          </div>
-           <div>
-            <Hero />
+            <Routes>
+              <Route path="/" element={<Hero />} />
+              <Route path="/geolocation" element={<Geolocation />} />
+              <Route path="/game" element={<Game />} />
+            </Routes>
           </div>
         </div>
       </SessionContext.Provider>
