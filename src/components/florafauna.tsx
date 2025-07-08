@@ -1,23 +1,58 @@
 import React, { useState } from "react";
+import mangroveImg from "../assets/Mangrove.png";
+import rotanImg from "../assets/Rotan.jpg";
+import kantongSemarImg from "../assets/Kantong Semar.jpg";
+import palemMerahImg from "../assets/Palem Merah.jpeg";
+import owaKalimantanImg from "../assets/Owa Kalimantan.jpg";
+import lebahKelulutImg from "../assets/Lebah Kelulut.jpg";
+import bekantanImg from "../assets/Bekantan.jpeg";
 
-const floraFaunaItems = [
+
+const floraItems = [
   {
-    img: "/assets/image4.jpg",
-    title: "Gajah",
+    img: mangroveImg,
+    title: "Mangrove",
     description:
-      "desc 1 avejhfbkhjafsgdhgjh Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.",
+      "Mangrove adalah hutan yang tumbuh di kawasan pesisir, dengan akar yang menyembul di atas permukaan air. Ekosistem ini berperan penting dalam melindungi pantai dari erosi dan menyediakan habitat bagi berbagai spesies fauna, seperti burung air dan kepiting.",
   },
   {
-    img: "/assets/image4.jpg",
-    title: "Kelelawar",
+    img: rotanImg,
+    title: "Rotan",
     description:
-      "desc 2 waefjydgukhwhurgej Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.",
+      "Rotan adalah tanaman yang tumbuh secara merambat atau memanjat, di mana banyak ditemukan di hutan-hutan Kalimantan Barat. Dikenal karena seratnya yang kuat, rotan digunakan untuk membuat berbagai produk, seperti kerajinan tangan dan furnitur.",
   },
   {
-    img: "/assets/image4.jpg",
-    title: "Unicorn",
+    img: kantongSemarImg,
+    title: "Kantong Semar (Nepenthes sp)",
     description:
-      "desc 3 aefjduiufgyfkdgu Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.",
+      "Kantong Semar adalah tanaman pemangsa yang memiliki kantong berfungsi untuk menangkap serangga. Tanaman ini tumbuh di daerah dengan tanah miskin nutrisi, seperti hutan tropis Kalimantan, dan memiliki bentuk yang unik.",
+  },
+  {
+    img: palemMerahImg,
+    title: "Palem Merah (Cyrtostachys lakka)",
+    description:
+      "Palem Merah adalah jenis palem yang tumbuh di hutan tropis Kalimantan. Dikenal dengan batangnya yang berwarna merah cerah, palem ini sering dijadikan tanaman hias karena tampilannya yang eksotis dan indah.",
+  },
+];
+
+const faunaItems = [
+  {
+    img: bekantanImg,
+    title: "Bekantan (Nasalis larvatus)",
+    description:
+      "Bekantan adalah primata endemik Kalimantan dengan ciri khas hidung besar yang menonjol. Spesies ini sering ditemukan di hutan mangrove dan pesisir Kalimantan Barat, termasuk di Sebubus dan sangat bergantung pada habitatnya yang terancam oleh deforestasi (penggundulan hutan).",
+  },
+  {
+    img: owaKalimantanImg,
+    title: "Uwak-uwak (Hylobates albibarbis)",
+    description:
+      "Uwak-uwak adalah spesies primata kecil yang hidup di hutan lindung Sebubus, Kalimantan Barat. Uwak-uwak memiliki bulu coklat kehitaman dan sering terlihat di pepohonan, bergerombol dalam kelompok kecil, serta memainkan peran penting dalam menjaga keseimbangan ekosistem hutan.",
+  },
+  {
+    img: lebahKelulutImg,
+    title: "Lebah Kelulut (Trigona spp)",
+    description:
+      "Lebah Kelulut adalah jenis lebah tanpa sengat yang dikenal dengan kemampuannya menghasilkan madu berkualitas tinggi. Dibiakkan oleh masyarakat Sebubus, madu Kelulut memiliki banyak manfaat kesehatan dan sering diolah menjadi produk seperti sabun alami.",
   },
 ];
 
@@ -26,16 +61,15 @@ type FloraFaunaProps = {
 };
 
 const FloraFauna: React.FC<FloraFaunaProps> = ({ type = "flora" }) => {
+  const items = type === "flora" ? floraItems : faunaItems;
   const [current, setCurrent] = useState(0);
 
   const next = () => {
-    setCurrent((prev) => (prev + 1) % floraFaunaItems.length);
+    setCurrent((prev) => (prev + 1) % items.length);
   };
 
   const prev = () => {
-    setCurrent((prev) =>
-      prev === 0 ? floraFaunaItems.length - 1 : prev - 1
-    );
+    setCurrent((prev) => (prev === 0 ? items.length - 1 : prev - 1));
   };
 
   return (
@@ -45,13 +79,12 @@ const FloraFauna: React.FC<FloraFaunaProps> = ({ type = "flora" }) => {
         backgroundSize: "cover",
         backgroundPosition: "center",
         padding: "4rem 1rem 1rem 1rem",
-        // aspectRatio: "1440 / 1900",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         gap: "2rem",
         zIndex: 20,
-        width: "100%", 
+        width: "100%",
         position: "relative",
         minHeight: "100vh",
       }}
@@ -70,122 +103,120 @@ const FloraFauna: React.FC<FloraFaunaProps> = ({ type = "flora" }) => {
       </h1>
 
       {/* Top cluster: arrows, image, and title */}
-        <div
+      <div
         style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "1rem",
-            maxWidth: "1000px",
-            width: "100%",
-            height: "300px",
-            position: "relative",
-            justifyContent: "center",
+          display: "flex",
+          alignItems: "center",
+          gap: "1rem",
+          maxWidth: "1000px",
+          width: "100%",
+          height: "300px",
+          position: "relative",
+          justifyContent: "center",
         }}
-        >
+      >
         {/* Left Arrow */}
         <div>
-            <button
+          <button
             onClick={prev}
             style={{
-                background: "transparent",
-                border: "none",
-                cursor: "pointer",
-                padding: "4px",
-                
+              background: "transparent",
+              border: "none",
+              cursor: "pointer",
+              padding: "4px",
             }}
-            >
-            <img 
-                src="/assets/leftArrowtes.png" 
-                alt="Left" width={20} 
-                style={{ filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.7))" }} 
+          >
+            <img
+              src="/assets/leftArrowtes.png"
+              alt="Left"
+              width={20}
+              style={{ filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.7))" }}
             />
-            </button>
+          </button>
         </div>
 
-         <div
-            style={{
+        {/* Image & Title */}
+        <div
+          style={{
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
             gap: "1rem",
             flex: 1,
-            }}
+          }}
         >
-
-        {/* Image */}
-        <div
+          <div
             style={{
-            aspectRatio: "1 / 1",
-            maxHeight: "100%",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            backgroundColor: "#000",
-            flexShrink: 0,
-            maxWidth: "300px", // fix agar gambar tidak terdorong
+              aspectRatio: "1 / 1",
+              maxHeight: "100%",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: "#000",
+              flexShrink: 0,
+              maxWidth: "300px",
             }}
-        >
+          >
             <img
-            src={floraFaunaItems[current].img}
-            alt={floraFaunaItems[current].title}
-            style={{
+              src={items[current].img}
+              alt={items[current].title}
+              style={{
                 width: "100%",
                 height: "100%",
                 objectFit: "cover",
                 boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
-            }}
+              }}
             />
-        </div>
+          </div>
 
-        {/* Title */}
-        <div
+          <div
             style={{
-            flex: 1,
-            height: "100%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "0 0.5rem",
+              flex: 1,
+              height: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: "0 0.5rem",
             }}
-        >
+          >
             <h2
-            style={{
+              style={{
                 fontFamily: "Lato, sans-serif",
                 fontSize: "clamp(1.5rem, 2.5vw, 1.2rem)",
                 color: "#fff",
                 textAlign: "center",
                 textShadow: "1px 1px 4px rgba(0,0,0,0.6)",
                 wordBreak: "break-word",
-                maxWidth: "100%", // agar tidak mendorong gambar
-            }}
+                maxWidth: "100%",
+              }}
             >
-            {floraFaunaItems[current].title}
+              {items[current].title}
             </h2>
-        </div>
+          </div>
         </div>
 
         {/* Right Arrow */}
         <div>
-            <button
+          <button
             onClick={next}
             style={{
-                background: "transparent",
-                border: "none",
-                cursor: "pointer",
-                padding: "4px",
+              background: "transparent",
+              border: "none",
+              cursor: "pointer",
+              padding: "4px",
             }}
-            >
-            <img 
-                src="/assets/rightArrow.png" 
-                alt="Right" width={20} 
-                style={{ filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.7))" }} 
+          >
+            <img
+              src="/assets/rightArrow.png"
+              alt="Right"
+              width={20}
+              style={{ filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.7))" }}
             />
-            </button>
+          </button>
         </div>
-        </div>
+      </div>
 
-
-      {/* Description Below */}
+      {/* Description */}
       <div
         style={{
           maxWidth: "800px",
@@ -201,7 +232,7 @@ const FloraFauna: React.FC<FloraFaunaProps> = ({ type = "flora" }) => {
             fontWeight: 400,
           }}
         >
-          {floraFaunaItems[current].description}
+          {items[current].description}
         </p>
       </div>
     </div>

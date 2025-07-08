@@ -63,6 +63,18 @@ const Navbar = () => {
         </div>
 
         <ul className={`nav-links ${isMenuOpen ? "open" : ""}`}>
+        <li>
+            {isTouchDevice() ? (
+              <button
+                className="nav-touch-link"
+                onTouchStart={() => handleTouchLink('/game')}
+              >
+                Home
+              </button>
+            ) : (
+              <Link to="/" onClick={closeMenu}>Home</Link>
+            )}
+          </li>
           <li>
             {isTouchDevice() ? (
               <button

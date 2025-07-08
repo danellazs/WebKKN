@@ -1,5 +1,4 @@
 import React, { useState, useRef } from "react";
-import SlidingImage from "./slidingImage";
 
 const ZoomIsland: React.FC = () => {
   const [zoomed, setZoomed] = useState(false);
@@ -10,7 +9,6 @@ const ZoomIsland: React.FC = () => {
     setZoomed(true);
   };
 
-  // Custom zoom-out logic: only zoom out if click is outside hotspots
   const handleZoomedIslandClick = (event: React.MouseEvent<HTMLDivElement>) => {
     const target = event.target as HTMLElement;
     if (!target.classList.contains("hotspot")) {
@@ -19,24 +17,25 @@ const ZoomIsland: React.FC = () => {
     }
   };
 
-  
-
   return (
     <div style={{ width: "100%", paddingTop: "5vw" }}>
-      <p
+      {/* Judul utama */}
+      <h1
         style={{
+          fontSize: "2rem",
+          color: "#3D5072",
+          fontFamily: "Bodar, sans-serif",
           textAlign: "center",
-          fontSize: "0.85rem",
-          color: "#555",
-          marginBottom: "1rem",
-          marginTop: "1rem",
+          margin: 0,
+          paddingBottom: "1rem",
           zIndex: 10,
           position: "relative",
         }}
       >
-        Anda bisa berinteraksi dengan map
-      </p>
+        PETA DESKRIPTIF
+      </h1>
 
+      {/* Map container */}
       <div
         ref={containerRef}
         style={{
@@ -48,7 +47,6 @@ const ZoomIsland: React.FC = () => {
           zIndex: 10,
         }}
       >
-        {/* Base Island Image */}
         {!zoomed && (
           <img
             src="/assets/island.png"
@@ -64,7 +62,6 @@ const ZoomIsland: React.FC = () => {
           />
         )}
 
-        {/* Zoomed Island with clickable areas */}
         {zoomed && (
           <div
             onClickCapture={handleZoomedIslandClick}
@@ -88,7 +85,7 @@ const ZoomIsland: React.FC = () => {
               }}
             />
 
-            {/* Hotspot 1 */}
+            {/* Hotspot Sebubus */}
             <div
               className="hotspot"
               onClick={() => setActiveDescription(1)}
@@ -105,7 +102,7 @@ const ZoomIsland: React.FC = () => {
               }}
             />
 
-            {/* Hotspot 2 */}
+            {/* Hotspot Temajuk */}
             <div
               className="hotspot"
               onClick={() => setActiveDescription(2)}
@@ -122,7 +119,7 @@ const ZoomIsland: React.FC = () => {
               }}
             />
 
-            {/* Optional overlay banners */}
+            {/* Banners */}
             <img
               src="/assets/sebubusbanner.png"
               alt="Sebubus"
@@ -153,7 +150,59 @@ const ZoomIsland: React.FC = () => {
         )}
       </div>
 
-      {/* Description Area 1 */}
+      {/* Deskripsi Sambas (awal sebelum zoom) */}
+      {!zoomed && (
+        <div
+          style={{
+            position: "relative",
+            marginTop: "5vw",
+            padding: "0.5vw 0vw",
+            fontSize: "1rem",
+            lineHeight: "1.6",
+            color: "#3D5072",
+            maxWidth: "800px",
+            marginLeft: "auto",
+            marginRight: "auto",
+            zIndex: 15,
+          }}
+        >
+          <div style={{ fontFamily: "Lato, sans-serif", padding: "0vw 2vw", letterSpacing: "2px", fontStyle: "italic" }}>
+            <strong>Kabupaten Sambas</strong>
+          </div>
+          <div style={{ padding: "0vw 5vw 3vw 5vw" }}>
+            <br />
+            Kabupaten Sambas terletak di bagian barat Kalimantan Barat, berbatasan dengan negara Malaysia di utara. Daerah ini memiliki potensi alam yang melimpah, termasuk hutan tropis, pesisir pantai, dan ekosistem mangrove yang kaya. Sebagai daerah yang masih sangat bergantung pada sektor pertanian dan perikanan, Sambas juga dikenal dengan keragaman budaya dan tradisi masyarakatnya yang beragam.
+          </div>
+        </div>
+      )}
+
+      {/* Deskripsi Paloh (zoom in, sebelum klik hotspot) */}
+      {zoomed && activeDescription === null && (
+        <div
+          style={{
+            position: "relative",
+            marginTop: "5vw",
+            padding: "0.5vw 0vw",
+            fontSize: "1rem",
+            lineHeight: "1.6",
+            color: "#3D5072",
+            maxWidth: "800px",
+            marginLeft: "auto",
+            marginRight: "auto",
+            zIndex: 15,
+          }}
+        >
+          <div style={{ fontFamily: "Lato, sans-serif", padding: "0vw 2vw", letterSpacing: "2px", fontStyle: "italic" }}>
+            <strong>Kecamatan Paloh</strong>
+          </div>
+          <div style={{ padding: "0vw 5vw 3vw 5vw" }}>
+            <br />
+            Kecamatan Paloh terletak di pesisir utara Kabupaten Sambas dan berbatasan langsung dengan Malaysia. Wilayah ini dikenal dengan pantai panjang, hutan mangrove, serta menjadi habitat penting bagi penyu. Potensinya besar dalam ekowisata, konservasi, dan pengembangan sektor perikanan serta pertanian masyarakat pesisir.
+          </div>
+        </div>
+      )}
+
+      {/* Deskripsi Sebubus */}
       {activeDescription === 1 && (
         <div
           style={{
@@ -167,35 +216,19 @@ const ZoomIsland: React.FC = () => {
             marginLeft: "auto",
             marginRight: "auto",
             zIndex: 15,
-            borderRadius: "0px",
           }}
         >
-          
-          <div style={{
-            fontFamily: "Lato, sans-serif", 
-            padding: "0vw 2vw", 
-            letterSpacing: "2px",
-            fontStyle: "italic"}}>
-            <div>
-              <strong>Mengenal Sebubus</strong> 
-            </div>
+          <div style={{ fontFamily: "Lato, sans-serif", padding: "0vw 2vw", letterSpacing: "2px", fontStyle: "italic" }}>
+            <strong>Mengenal Sebubus</strong>
           </div>
-
-          <div style={{padding: "0vw 5vw 3vw 5vw",}}>
-          <br />
-          Infosebubus Lorem ipsum dolor sit amet, 
-          consectetur adipiscing elit, sed do eiusmod tempor incididunt 
-          ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis 
-          nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
-          Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu 
-          fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-          culpa qui officia deserunt mollit anim id est laborum
+          <div style={{ padding: "0vw 5vw 3vw 5vw" }}>
+            <br />
+            Desa Sebubus berada di Kecamatan Paloh, Kabupaten Sambas, dengan akses ke pantai dan kawasan hutan mangrove yang luas. Desa ini dikenal dengan keanekaragaman hayati, termasuk satwa langka, seperti bekantan dan habitat penting bagi penyu. Selain itu, Sebubus memiliki potensi besar dalam pengembangan ekowisata berbasis alam dan konservasi serta kegiatan budidaya kelapa dan rotan yang menjadi mata pencaharian utama masyarakat setempat.
           </div>
-        <SlidingImage borderRadius="0px"/>
         </div>
       )}
 
-      {/* Description Area 2 */}
+      {/* Deskripsi Temajuk */}
       {activeDescription === 2 && (
         <div
           style={{
@@ -211,27 +244,13 @@ const ZoomIsland: React.FC = () => {
             zIndex: 15,
           }}
         >
-          <div style={{
-            fontFamily: "Lato, sans-serif", 
-            padding: "0vw 2vw", 
-            letterSpacing: "2px",
-            fontStyle: "italic"}}>
-            <div>
-              <strong>Mengenal Temajuk</strong> 
-            </div>
+          <div style={{ fontFamily: "Lato, sans-serif", padding: "0vw 2vw", letterSpacing: "2px", fontStyle: "italic" }}>
+            <strong>Mengenal Temajuk</strong>
           </div>
-
-          <div style={{padding: "0vw 5vw 3vw 5vw"}}>
-          <br />
-          Info temajuk Lorem ipsum dolor sit amet, 
-          consectetur adipiscing elit, sed do eiusmod tempor incididunt 
-          ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis 
-          nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
-          Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu 
-          fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-          culpa qui officia deserunt mollit anim id est laborum
+          <div style={{ padding: "0vw 5vw 3vw 5vw" }}>
+            <br />
+            Terletak di ujung barat Kalimantan Barat, Desa Temajuk menawarkan pemandangan alam yang indah dengan garis pantai sepanjang 63 kilometer yang menjadi habitat peneluran penyu hijau. Masyarakat Temajuk sebagian besar bekerja di sektor pertanian dan perikanan dengan potensi besar dalam ekowisata. Desa ini juga memiliki potensi dalam pengembangan industri berbasis alam, seperti budidaya ikan dan pemanfaatan sumber daya alam secara berkelanjutan.
           </div>
-          <SlidingImage borderRadius="0px"/>
         </div>
       )}
     </div>
