@@ -6,18 +6,22 @@ import palemMerahImg from "../assets/Palem Merah.jpeg";
 import owaKalimantanImg from "../assets/Owa Kalimantan.jpg";
 import lebahKelulutImg from "../assets/Lebah Kelulut.jpg";
 import bekantanImg from "../assets/Bekantan.jpeg";
+import PenyuBelimbing from "../assets/Penyu Belimbing.jpg";
+import PenyuHijau from "../assets/Penyu-Hijau.jpg";
+import PenyuLekang from "../assets/Penyu Lekang.jpg";
+import PenyuSisik from "../assets/Penyu-Sisik.webp";
 
 
 const floraItems = [
   {
     img: mangroveImg,
-    title: "Mangrove",
+    title: "Mangrove (Rhizophora spp)",
     description:
       "Mangrove adalah hutan yang tumbuh di kawasan pesisir, dengan akar yang menyembul di atas permukaan air. Ekosistem ini berperan penting dalam melindungi pantai dari erosi dan menyediakan habitat bagi berbagai spesies fauna, seperti burung air dan kepiting.",
   },
   {
     img: rotanImg,
-    title: "Rotan",
+    title: "Rotan (Calamus spp)",
     description:
       "Rotan adalah tanaman yang tumbuh secara merambat atau memanjat, di mana banyak ditemukan di hutan-hutan Kalimantan Barat. Dikenal karena seratnya yang kuat, rotan digunakan untuk membuat berbagai produk, seperti kerajinan tangan dan furnitur.",
   },
@@ -53,6 +57,30 @@ const faunaItems = [
     title: "Lebah Kelulut (Trigona spp)",
     description:
       "Lebah Kelulut adalah jenis lebah tanpa sengat yang dikenal dengan kemampuannya menghasilkan madu berkualitas tinggi. Dibiakkan oleh masyarakat Sebubus, madu Kelulut memiliki banyak manfaat kesehatan dan sering diolah menjadi produk seperti sabun alami.",
+  },
+  {
+    img: PenyuHijau,
+    title: "Penyu Hijau (Chelonia Mydas)",
+    description:
+      "Penyu hijau adalah jenis penyu yang paling sering dijumpai di Paloh, dengan 98% dari total penyu yang naik ke pesisir merupakan penyu hijau. Dikenal dengan cangkangnya yang berwarna hijau dan ukuran tubuhnya yang besar, penyu hijau memakan rumput laut dan alga sebagai makanannya. Keberadaan penyu hijau yang dominan menjadikan Paloh sebagai habitat peneluran penyu hijau terpanjang di Indonesia, dengan garis pantai yang membentang sepanjang 63 kilometer.",
+  },
+  {
+    img: PenyuSisik,
+    title: "Penyu Sisik (Eretmochelys Imbricata)",
+    description:
+      "Penyu Sisik adalah spesies penyu laut yang memiliki cangkang berwarna coklat keemasan dengan sisik tumpang tindih, dan paruhnya yang tajam membantunya dalam memakan spons dan terumbu karang. Dikenal sebagai spesies terancam punah, penyu sisik sering ditemukan di perairan tropis dan subtropis, termasuk di pantai-pantai di Indonesia, seperti Paloh, Kalimantan Barat.",
+  },
+  {
+    img: PenyuLekang,
+    title: "Penyu Lekang (Lepidochelys Olivacea)",
+    description:
+      "Penyu Lekang adalah spesies penyu laut terkecil di dunia, dengan ukuran karapas sekitar 60-70 cm dan berat antara 31 hingga 43 kg. Karapasnya memiliki warna abu-abu kehijauan dan bentuk yang langsing serta bersudut, berbeda dari penyu lainnya. Spesies ini dapat ditemukan di perairan tropis dan subtropis, termasuk di pesisir selatan Bali, seperti Pantai Kuta dan Klungkung, serta di pesisir Kalimantan dan Papua.",
+  },
+  {
+    img: PenyuBelimbing,
+    title: "Penyu Belimbing (Dermochelys Coriacea)",
+    description:
+    "Penyu Belimbing adalah penyu laut terbesar di dunia, dengan panjang hingga 2,7 meter dan berat 700 kg. Memiliki cangkang lembut dan sirip besar, penyu ini memakan ubur-ubur. Di Kalimantan Barat, meskipun jarang, penyu belimbing kadang mendarat di pantai-pantai pesisir, seperti di Paloh untuk bertelur.",
   },
 ];
 
@@ -182,7 +210,7 @@ const FloraFauna: React.FC<FloraFaunaProps> = ({ type = "flora" }) => {
             <h2
               style={{
                 fontFamily: "Lato, sans-serif",
-                fontSize: "clamp(1.5rem, 2.5vw, 1.2rem)",
+                fontSize: "clamp(1.2rem, 2.5vw, 1.5rem)",
                 color: "#fff",
                 textAlign: "center",
                 textShadow: "1px 1px 4px rgba(0,0,0,0.6)",
