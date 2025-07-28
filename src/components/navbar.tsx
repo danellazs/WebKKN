@@ -67,7 +67,7 @@ const Navbar = () => {
             {isTouchDevice() ? (
               <button
                 className="nav-touch-link"
-                onTouchStart={() => handleTouchLink('/game')}
+                onTouchStart={() => handleTouchLink('/')}
               >
                 Home
               </button>
