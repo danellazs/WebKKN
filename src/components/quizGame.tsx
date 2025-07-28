@@ -2,7 +2,7 @@ import { useEffect, useState, useContext } from "react";
 import { supabase } from "../supabase-client";
 import { SessionContext } from "../context/sessionContext";
 import PointDisplay from "./pointDisplay";
-import Gacha from "./gacha"; // ⬅️ pastikan kamu import ini
+import Gacha from "./gacha"; 
 
 type QuizChoice = {
   id: string;
@@ -16,7 +16,11 @@ type QuizQuestion = {
   choices: QuizChoice[];
 };
 
-const QuizGame = () => {
+interface QuizGameProps {
+  onRefreshGenerations: () => void;
+}
+
+const QuizGame = ({ onRefreshGenerations }: QuizGameProps) => {
   const session = useContext(SessionContext);
   const [questions, setQuestions] = useState<QuizQuestion[]>([]);
   const [answers, setAnswers] = useState<{ [key: string]: string }>({});
@@ -104,7 +108,27 @@ const QuizGame = () => {
 
     // ✅ Trigger untuk refresh points dan child component
     setRefreshTrigger(prev => prev + 1);
-  };
+  // ✅ Update semua question_generations yang belum dibuka
+  try {
+    const { error } = await supabase
+      .from("question_generations")
+      .update({ is_opened: true })
+      .eq("user_id", session.user.id)
+      .eq("is_opened", false);
+
+    if (error) throw error;
+
+    // ✅ (Opsional) panggil refresh ikon di parent
+    if (typeof onRefreshGenerations === "function") {
+      onRefreshGenerations();
+    }
+
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      console.error("Gagal update question_generations:", err.message);
+    }
+  }
+};
 
   return (
     <div>

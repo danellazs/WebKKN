@@ -180,7 +180,7 @@ const Game = () => {
           backgroundColor: "#f0c674",
           borderRadius: "15px",
           padding: "15px 25px",
-          fontSize: "16px",
+          fontSize: "1rem",
           cursor: "pointer",
           boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
           zIndex: 1000,
@@ -201,7 +201,7 @@ const Game = () => {
           backgroundColor: "#ff6b6b",
           borderRadius: "15px",
           padding: "10px 20px",
-          fontSize: "16px",
+          fontSize: "1rem",
           color: "white",
           cursor: "pointer",
           boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
@@ -234,7 +234,7 @@ const Game = () => {
         />
       ))}
 
-      <ScrollQuiz isVisible={scrollQuizVisible} onClose={closeScrollQuiz} />
+      <ScrollQuiz isVisible={scrollQuizVisible} onClose={closeScrollQuiz}  onRefresh={fetchBotols}/>
     </div>
   );
 };

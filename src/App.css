@@ -417,7 +417,7 @@ form.story-form {
 /* pastikan pet-pool position relative supaya tombol absolute bisa di posisi */
 .pet-pool {
   position: relative;
-  width: 500px;
+  width: 100vw;
   height: 300px;
   border: 2px solid #999;
   overflow: hidden;

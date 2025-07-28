@@ -18,9 +18,10 @@ type QuizQuestion = {
 interface ScrollQuizProps {
   isVisible: boolean;
   onClose: () => void;
+  onRefresh?: () => void;
 }
 
-const ScrollQuiz: React.FC<ScrollQuizProps> = ({ isVisible, onClose }) => {
+const ScrollQuiz: React.FC<ScrollQuizProps> = ({ isVisible, onClose, onRefresh }) => {
   const session = useContext(SessionContext);
   const [questions, setQuestions] = useState<QuizQuestion[]>([]);
   const [answers, setAnswers] = useState<{ [key: string]: string }>({});
@@ -109,7 +110,39 @@ const ScrollQuiz: React.FC<ScrollQuizProps> = ({ isVisible, onClose }) => {
     setScore(correct * 10);
     setSubmitted(true);
     setRefreshTrigger(prev => prev + 1);
-  };
+  // ✅ Tandai kuis sebagai dibuka
+  try {
+    const { data: recentGeneration, error: fetchGenError } = await supabase
+      .from("question_generations")
+      .select("id")
+      .eq("user_id", session.user.id)
+      .eq("is_opened", false)
+      .order("generated_at", { ascending: false })
+      .limit(1)
+      .single();
+
+    if (fetchGenError) throw fetchGenError;
+
+    if (recentGeneration?.id) {
+      const { error: updateError } = await supabase
+        .from("question_generations")
+        .update({ is_opened: true })
+        .eq("id", recentGeneration.id);
+
+      if (updateError) throw updateError;
+    }
+    
+        if (onRefresh) {
+      onRefresh();
+    }
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      console.error("Gagal menandai kuis sebagai dibuka:", err.message);
+    } else {
+      console.error("Kesalahan tidak diketahui saat update is_opened.");
+    }
+  }
+};
 
   const handleClose = () => {
     setIsAnimating(false);
@@ -182,7 +215,7 @@ const ScrollQuiz: React.FC<ScrollQuizProps> = ({ isVisible, onClose }) => {
               </button>
             ) : (
               <div className="score-display">
-                <p> Skor kamu: <strong>{score} poin</strong> 🎉</p>
+                <p> Skor kamu: <strong>{score} poin</strong> </p>
               </div>
             )}
           </div>
