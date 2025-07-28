@@ -35,7 +35,7 @@ const PetPool = ({ userPets, allPets }: { userPets: Pet[]; allPets: Pet[] }) => 
           >
             {/* 🔽 NEW SECTION: ALL PETS DISPLAYED WITH OWNED CHECK 🔽 */}
             <div className="pet-list-section">
-              <h3>📜 Semua Pet yang Tersedia</h3>
+              <h3> Semua Pet yang Tersedia</h3>
               <div className="pet-list-grid">
                 {allPets.map((pet) => {
                   const owned = userPets.some((up) => up.id === pet.id);
