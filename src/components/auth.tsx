@@ -65,8 +65,8 @@ const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
 
 
   return (
-    <div style={{ maxWidth: "400px", margin: "0 auto", padding: "1rem" }}>
-      <h2>{isSignUp ? "Sign Up" : "Sign In"}</h2>
+    <div style={{ maxWidth: "400px", margin: "0 auto", padding: "1rem", color: "#333" }}>
+      <b><h2>{isSignUp ? "Sign Up" : "Sign In"}</h2></b>
 
       {errorMessage && (
         <div style={{ color: "red", marginBottom: "1rem" }}>
@@ -82,7 +82,7 @@ const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
           onChange={(e: ChangeEvent<HTMLInputElement>) =>
             setEmail(e.target.value)
           }
-          style={{ width: "100%", marginBottom: "0.5rem", padding: "0.5rem" }}
+          style={{ width: "100%", marginBottom: "0.5rem", padding: "0.5rem", color: "#333", border: "1px solid #ccc" }}
         />
         <input
           type="password"
@@ -91,7 +91,7 @@ const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
           onChange={(e: ChangeEvent<HTMLInputElement>) =>
             setPassword(e.target.value)
           }
-          style={{ width: "100%", marginBottom: "0.5rem", padding: "0.5rem" }}
+          style={{ width: "100%", marginBottom: "0.5rem", padding: "0.5rem",  color: "#333", border: "1px solid #ccc"  }}
         />
         {isSignUp && (
           <input
@@ -101,12 +101,12 @@ const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
             onChange={(e: ChangeEvent<HTMLInputElement>) =>
               setName(e.target.value)
             }
-            style={{ width: "100%", marginBottom: "0.5rem", padding: "0.5rem" }}
+            style={{ width: "100%", marginBottom: "0.5rem", padding: "0.5rem",  color: "#333", border: "1px solid #ccc"  }}
           />
         )}
         <button
           type="submit"
-          style={{ padding: "0.5rem 1rem", marginRight: "0.5rem" }}
+          style={{ padding: "0.5rem 1rem", margin: "0.5rem 0rem", backgroundColor: "#96ADC5", color: "white", marginBottom: "1rem" }}
         >
           {isSignUp ? "Sign Up" : "Sign In"}
         </button>
@@ -117,7 +117,7 @@ const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
           setIsSignUp(!isSignUp);
           setErrorMessage(null);
         }}
-        style={{ padding: "0.5rem 1rem" }}
+        style={{ padding: "0.5rem 1rem", color: "#8899AE", border: "1px solid #8899AE" }}
       >
         {isSignUp ? "Switch to Sign In" : "Switch to Sign Up"}
       </button>

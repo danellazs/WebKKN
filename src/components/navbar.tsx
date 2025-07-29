@@ -118,9 +118,9 @@ const Navbar = () => {
           <div className="auth-modal-content">
             <button
               onClick={() => setShowAuth(false)}
-              className="auth-modal-close-button"
+              style={{marginLeft: "18rem", color: "red", border: "2px solid red" }}
             >
-              Close
+              X
             </button>
             <Auth />
           </div>
